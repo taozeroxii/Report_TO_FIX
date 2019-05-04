@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>หน้าแรก</title>
+    <title>จัดการสมาชิก</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     
 </head>
@@ -61,7 +61,7 @@
 
 
         <!--  //////////////////////////////////////////// ค้นหา/////////////////////////////////////////////////////////     -->
-        <form name="frmSearch" method="get" action="<?php echo $_SERVER['SCRIPT_NAME'];?>">
+        <form name="frmSearch" method="get" action="<?php echo $_SERVER['SCRIPT_NAME'];?>"> <!-- $_SERVER['SCRIPT_NAME']; คือการดึงชื่อเอกสารมา เมื่อกด form นี้ให้เกิดaction โหลดหน้าเดิม-->
             <div class="container" >
                     <div class="row">
                         <div class="col-lg-12">
@@ -77,46 +77,63 @@
                     </div>
             </div>
         </form>
-        <!--  /////////////////////////////////////////// ค้นหา/////////////////////////////////////////////////////////    -->
+        <!--  //////////////////////////////////////////////////////////////////////////////////////////////////////////////    -->
 
 
 
 
 
-        <!--  ///////////////////////////////////////// แก้ไขข้อมูลเมื่อกดส่งฟอร์ม method post//////////////////////////////     -->
+        <!--  ///////////////////////////////////////// แก้ไขข้อมูลเมื่อกดส่งฟอร์ม method post จาก Edit From//////////////////////////////     -->
         <?php
                 if(isset($_POST['submit'])){
-                include_once('connect.php');
-              
+                    include_once('connect.php');
+                
 
-                $selectcid = "SELECT * FROM users_account WHERE cid = '".$_POST["txtcid13"]."'";
-             
-                $objQuery2 = mysqli_query($conn,$selectcid);
-                $objResult2 = mysqli_fetch_array($objQuery2);
-                if($objResult2)
-                {
-                    $Update = "UPDATE `users_account` SET 
-                    `username` ='".$_POST["txtuser"]."', 
-                    `password` = '".$_POST["txtpassword"]."', 
-                    `name` = '".$_POST["txtname"]."', 
-                    `fname` = '".$_POST["txtfname"]."', 
-                    `lname` = '".$_POST["txtlname"]."', 
-                    `niname` = '".$_POST["txtniname"]."', 
-                    `status` = '".$_POST["txtstatus"]."', 
-                    `phone_number` = '".$_POST["txtphonen"]."' 
-                     WHERE `cid` = '".$_POST["txtcid13"]."';
+                    $selectcid = "SELECT * FROM users_account WHERE cid = '".$_POST["txtcid13"]."'";
+                
+                    $objQuery2 = mysqli_query($conn,$selectcid);
+                    $objResult2 = mysqli_fetch_array($objQuery2);
+                    if($objResult2)
+                    {
+                        $Update = "UPDATE `users_account` SET 
+                        `username` ='".$_POST["txtuser"]."', 
+                        `password` = '".$_POST["txtpassword"]."', 
+                        `name` = '".$_POST["txtname"]."', 
+                        `fname` = '".$_POST["txtfname"]."', 
+                        `lname` = '".$_POST["txtlname"]."', 
+                        `niname` = '".$_POST["txtniname"]."', 
+                        `status` = '".$_POST["txtstatus"]."', 
+                        `phone_number` = '".$_POST["txtphonen"]."' 
+                        WHERE `cid` = '".$_POST["txtcid13"]."';
 
-                    ;";
-                  
-                    $updatequery = mysqli_query($conn,$Update);
-                    if($updatequery) {
-                        mysqli_close($conn);
-                        echo "<script>alert('แก้ไขข้อมูลเรียบร้อย');window.reload=manageusers.php;</script>";
-                    }
+                        ;";
+                    
+                        $updatequery = mysqli_query($conn,$Update);
+                        if($updatequery) {
+                            mysqli_close($conn);
+                            echo "<script>alert('แก้ไขข้อมูลเรียบร้อย');window.reload=manageusers.php;</script>";
+                        }
+                
+                
+                    }else{  $message ="เลขบัตรประชาชนไม่ถูกต้อง"; }
+                }  
+
+                if(isset($_POST['delete'])){
+                    include_once('connect.php');
+                    $selectcids = "SELECT * FROM users_account WHERE cid = '".$_POST["txtciddel"]."'";
+                    $objQueryUsers = mysqli_query($conn,$selectcids);
+                    $ObjQuerfetch = mysqli_fetch_array($objQueryUsers);
             
-               
-                }else{  $message ="เลขบัตรประชาชนไม่ถูกต้อง"; }
-            }  
+                    if($ObjQuerfetch)
+                    {
+                        $Deleteuser  = "DELETE FROM `users_account` WHERE `cid` = '".$_POST["txtciddel"]."'";
+                        $updatequery = mysqli_query($conn,$Deleteuser);
+                        mysqli_close($conn);
+                        echo "<script>alert('ลบข้อมูลเรียบร้อย');window.reload=manageusers.php;</script>";
+                    }
+                
+                }
+
         ?>
       <!--  ///////////////////////////////////////// -------------------------------------------     /////////////////////////////     -->
 
@@ -124,7 +141,7 @@
 
 
 
-      <!--  /////////////////// เชื่อมต่อ และquery จำนวนหน้าและและช่องแถบค้นหา //////////////////     -->
+      <!--  /////////////////// เชื่อมต่อ และquery จำนวนหน้าและและช่องแถบค้นหา GET METHOD FROM ค้นหา//////////////////     -->
         <?php
             $con = mysqli_connect('localhost', 'root', '', 'users');
             mysqli_set_charset($con, "utf8");
@@ -172,13 +189,37 @@
                                 <td style="text-align:center;">
                                     <button type="button" class="btn btn-warning " data-toggle="modal" data-target="#exampleModal<?php echo $result['cid'];?>" <?php if($_SESSION['status']!= $result['status']&& $result['status'] =='SUPERADMIN'){ echo 'disabled';}?>> 
                                     <img src="icon/edit.png" width="20" height="20"/> แก้ไขข้อมูล</button>
-                                    <button type="button" class="btn btn-danger "  <?php if($_SESSION['status']!= 'SUPERADMIN'){ echo 'disabled';}?> >
-                                    <img src="icon/delete.png" width="20" height="20"/> ลบข้อมูล</button>
+                                    <button type="button" class="btn btn-danger "  data-toggle="modal" data-target="#mymodel<?php echo $result['cid'];?>" <?php if($_SESSION['status']!= 'SUPERADMIN'){ echo 'disabled';}?> >
+                                    <img src="icon/delete.png"  width="20" height="20"/> ลบข้อมูล</button>
+                                    
                                 </td>
                             </tr>
 
+                                    <!--///////////////////////////////////////////// Modal DELETE เมื่อกดปุ่มลบ ///////////////////////////////////////////////////////-->    
+                                        <div class="modal fade" id="mymodel<?php echo $result['cid'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">ลบข้อมูลผู้ใช้งาน</h4> 
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <h5 style = 'text-align:center;'> <?php echo $result['cid'].'  '."คุณ : ".'   '.$result['fname'].'   '.$result['lname'];?></h2>
+                                            
+                                                <form action="#" method="POST">
+                                                    <div class="modal-footer">
+                                                        <input type="hidden" name = 'txtciddel' value = "<?php echo $result['cid'];?>"><!-- สร้างรinputล่อนหนหลอกไว้ส่งค่า cid ตอนกดปุ่ม del-->
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                                                        <input type="submit" name ="delete" class ="btn btn-primary" value="ยืนยันลบ">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            </div>
+                                        </div>
+                                         <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////--> 
+                        
 
-                                         <!--///////////////////////////////////////////// Modal EDIT  ///////////////////////////////////////////////////////-->    
+                                         <!--///////////////////////////////////////////// Modal EDIT เมื่อกดปุ่มแก้ไข ///////////////////////////////////////////////////////-->    
                                         <div class="modal fade" id="exampleModal<?php echo $result['cid'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -313,9 +354,8 @@
                 </div>
                 </div>
             </div> <!-- /container -->
-    <?php }else{echo "<script>window.location ='index.php';</script>"; }?>
      <!--  /////////////////// ส่วนของ paginatorทำ query มาใหม่และนับจำนวนแถว //////////////////     -->
-
+     <?php }else{echo "<script>window.location ='index.php';</script>"; }?>
 
 
  
