@@ -30,6 +30,7 @@
                 $_SESSION['fname'] =  $accoutUsser['fname'];
                 $_SESSION['lname'] =  $accoutUsser['lname'];
                 $_SESSION['status'] =  $accoutUsser['status'];
+                $_SESSION['phone_number'] =  $accoutUsser['phone_number'];
                 $_SESSION['title_name_id'] =  $accoutUsser['title_name_id'];
                 $_SESSION['department_id'] =  $accoutUsser['department_id'];
                 

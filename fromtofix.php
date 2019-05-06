@@ -32,20 +32,31 @@
         ";
         $objQuerydptest = mysqli_query($conn,$Querydptest);
 
-        while($resultss = mysqli_fetch_assoc($objQuerydptest)){ 
-            echo $resultss['department_name'].'  ห้อง ';
-            echo $resultss['room_name'].' ';
-            echo $resultss['buliding_floor_name'].' อาคาร ';
-            echo $resultss['buliding_name'];
-
-        }
-
-    
         ///////////////////////////////////////////////////////////////////////////////////////////////
-
-    
     ?>
 
+    <?php if(isset($_POST['submit'])){
+        echo $_SESSION['cid'];
+        echo $_POST['txtstatusfix'];
+        echo $_POST['txtreportrepair'];
+        echo $_POST['txtadddate'];
+        echo $_POST['txtcallbackphone'].'<br>';
+
+    } 
+    $code = "A";
+    $yearMonth = substr(date("Y")+543, -2).date("m");
+     
+    //query MAX ID 
+    $sql = "SELECT MAX(repair_report_id) AS last_id FROM repair_report";
+    $qry = mysqli_query($conn,$sql);
+    $rs = mysqli_fetch_assoc($qry);
+    $maxId = substr($rs['last_id'], -5);  //ข้อมูลนี้จะติดรหัสตัวอักษรด้วย ตัดเอาเฉพาะตัวเลขท้ายนะครับ
+    //$maxId = 237;   //<--- บรรทัดนี้เป็นเลขทดสอบ ตอนใช้จริงให้ ลบ! ออกด้วยนะครับ
+    $maxId = ($maxId + 1); 
+    
+    $maxId = substr("00000".$maxId, -5);
+    echo $nextId = $code.$yearMonth.$maxId;
+    ?>
 
 
 
@@ -109,16 +120,29 @@
                         <div class="card-body">
 
 
+                        <div class="row">
+                                <div class="col-9">  
+                                    <?php while($resultss = mysqli_fetch_assoc($objQuerydptest)){ ?>
+                                    <label for="form-control">จุดใช้งาน</label>
+                                    <select id="txtbulidingroomid" class="form-control" required disabled>
+                                        <option selected value = '<?php echo $resultss['buliding_room_id']?>'>
+                                        <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?></option>
+                                    </select>
+                                    <input type="hidden" name = 'txtrepairrepordid' class="form-control" value = " <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?> " disabled>
+                                    <?php } ?>
+                                </div>
+
+                                <div class="col-3">           
+                                <label for="form-control">เลขที่ใบแจ้ง</label><input type="text" name = 'txtrepairrepordid' class="form-control" value = "<?php  echo $nextId ?>" disabled>
+                                </div>
+                        </div>
+                        
                     
                         <hr>
                             <div class="row">
                                 <div class="col">
                                     <label for="form-control">เลขบัตรประชาชน</label>
-                                    <input type="text" class="form-control" value = "<?php echo $_SESSION['cid']; ?>" disabled>
-                                </div>
-                                <div class="col-2">
-                                    <label for="form-control">คำนำหน้า</label>
-                                    <input type="text" class="form-control" value = "<?php echo $_SESSION['title_name_id']; ?>" disabled>
+                                    <input type="text" name='txtcid' class="form-control" value = "<?php echo $_SESSION['cid']; ?>" disabled>
                                 </div>
                                 <div class="col">
                                     <label for="form-control">ชื่อ-นามสกุล</label>
@@ -128,68 +152,42 @@
                                     <label for="form-control">สถานะผู้ใช้งาน</label>
                                     <input type="text" class="form-control" value = "<?php echo $_SESSION['status']; ?>" disabled>
                                 </div>
-                            </div>
-                            <hr>
-    
-
-                            <div class="row">
-                                
-                                <div class="col-4">
-                                <label>แผนก </label>
-                                <select id="inputState" name="txtdepartment" class="form-control" required>
-                            
-
-                                    <option selected value ="<?php  $_SESSION['department_id'];?>"> <?php echo $_SESSION['department_id'];?></option> 
-
-                                
-                                </select>
-                                </div>
-                                
-                                <div class="col-2">
-                                    <label>ห้อง</label>
-                                    <input type="text" class="form-control" placeholder="ห้อง">
-                                </div>
-                                <div class="col-1">
-                                    <label>ชั้น</label>
-                                    <input type="text" class="form-control" placeholder="..">
-                                </div> 
-                                <div class="col-2">
-                                    <label>อาคาร</label>
-                                    <input type="text" class="form-control" placeholder="อาคาร..">
-                                </div>
-
                                 <div class="col-3">
                                 <label>ประเภทการแจ้ง</label>
-                                    <select id="inputState" class="form-control">
-                                        <option selected>เลือกประเภทการแจ้ง</option>
-                                        <option>อุปกรณ์คอมพิวเตอร์</option>
-                                        <option>โปรแกรม</option>
-                                        <option>อินเทอร์เน็ต</option>
+                                    <select id="inputState" name = 'txtstatusfix' class="form-control" required>
+                                        <option selected value = ''>เลือกประเภทการแจ้ง</option>
+                                        <option  value = 'อุปกรณ์คอมพิวเตอร์'>อุปกรณ์คอมพิวเตอร์</option>
+                                        <option value = 'โปรแกรม'>โปรแกรม</option>
+                                        <option  value = 'อินเทอร์เน็ต'>อินเทอร์เน็ต</option>
                                     </select>
                                 </div>                               
                             </div>
+                           
                             <hr>
+    
+
+                            
 
 
 
                             <div class="row">
                                 <div class="col">
                                     <label for="exampleFormControlTextarea1">อาการเสียเบื้องต้น</label>
-                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="อาการ..."></textarea>
+                                    <textarea name = 'txtreportrepair' class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="อาการ..."></textarea>
                                 </div>                              
                                 <div class="col">
                                     <label for="form-control">วันที่แจ้ง</label>
-                                    <input type="date" name='adddate' class="form-control" placeholder="วันที่" >   
+                                    <input type="date" name='txtadddate' class="form-control" placeholder="วันที่" >   
                                     <label for="form-control">หมายเลขติดต่อกลับ</label>
-                                    <input type="text" name ='callbackphone' class="form-control" placeholder="หมายเลขติดต่อกลับ">               
+                                    <input type="text" name ='txtcallbackphone' class="form-control" placeholder="หมายเลขติดต่อกลับ" value ="<?php echo $_SESSION['phone_number']?>">               
                                 </div>                  
                             </div>
                             <hr>
 
                         </div>
                         <div class="card-footer text-center">
-                            <input type="submit" name ="ยืนยัน" class ="btn btn-info" value="ยืนยัน">
-                            <input type="reset" name ="ยกเลิก" class ="btn btn-warning" value="ยกเลิก">
+                            <input type="submit" name ="submit" class ="btn btn-info" value="ยืนยัน">
+                            <input type="reset" name ="reset" class ="btn btn-warning" value="ยกเลิก">
                         </div>
                     </div>
                     </form>
