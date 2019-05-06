@@ -17,15 +17,31 @@
 
 
     <?php 
+        //////////////////////////////////        QUERY        //////////////////////////////////////////////
         include_once('connect.php');
         mysqli_set_charset($conn, "utf8");
+        $querytitlename =  "SELECT *FROM  title_name";
+        $objQuerytitlename = mysqli_query($conn,$querytitlename);
 
-        $_SESSION['title_name_id'];
-        $_SESSION['department_id'];
+        $Querydptest =  "select * from department dp
+        inner join buliding_room  br on dp.buliding_room_id  = br.buliding_room_id 
+        inner join buliding_floor bf on bf.buliding_floor_id  = br.buliding_floor_id
+        inner join buliding bd on bd.buliding_id = bf.buliding_id
+        where dp.department_id = '".$_SESSION['department_id']."'
+        
+        ";
+        $objQuerydptest = mysqli_query($conn,$Querydptest);
 
-        $QuerySelectIdtitle = "SELECT * FROM title_name WHERE title_name_id = '". $_SESSION['title_name_id']."'";
-        $objQuerySelectIdtitle = mysqli_query($conn,$QuerySelectIdtitle);
-        $objResultQuerySelectIdtitle = mysqli_fetch_array($objQuerySelectIdtitle);
+        while($resultss = mysqli_fetch_assoc($objQuerydptest)){ 
+            echo $resultss['department_name'].'  ห้อง ';
+            echo $resultss['room_name'].' ';
+            echo $resultss['buliding_floor_name'].' อาคาร ';
+            echo $resultss['buliding_name'];
+
+        }
+
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////
 
     
     ?>
@@ -101,8 +117,8 @@
                                     <input type="text" class="form-control" value = "<?php echo $_SESSION['cid']; ?>" disabled>
                                 </div>
                                 <div class="col-2">
-                                    <label for="form-control">คำนำหน้าชื่อ</label>
-                                    <input type="text" class="form-control" value = "<?php echo $objResultQuerySelectIdtitle['title_name']; ?>" disabled>
+                                    <label for="form-control">คำนำหน้า</label>
+                                    <input type="text" class="form-control" value = "<?php echo $_SESSION['title_name_id']; ?>" disabled>
                                 </div>
                                 <div class="col">
                                     <label for="form-control">ชื่อ-นามสกุล</label>
@@ -115,24 +131,33 @@
                             </div>
                             <hr>
     
+
                             <div class="row">
                                 
                                 <div class="col-4">
-                                    <label>แผนก</label>
-                                    <input type="text" class="form-control" placeholder="แผนก..">
+                                <label>แผนก </label>
+                                <select id="inputState" name="txtdepartment" class="form-control" required>
+                            
+
+                                    <option selected value ="<?php  $_SESSION['department_id'];?>"> <?php echo $_SESSION['department_id'];?></option> 
+
+                                
+                                </select>
                                 </div>
-                                <div class="col-2">
-                                    <label>อาคาร</label>
-                                    <input type="text" class="form-control" placeholder="อาคาร..">
-                                </div>
-                                <div class="col-1">
-                                    <label>ชั้น</label>
-                                    <input type="text" class="form-control" placeholder="..">
-                                </div>
+                                
                                 <div class="col-2">
                                     <label>ห้อง</label>
                                     <input type="text" class="form-control" placeholder="ห้อง">
                                 </div>
+                                <div class="col-1">
+                                    <label>ชั้น</label>
+                                    <input type="text" class="form-control" placeholder="..">
+                                </div> 
+                                <div class="col-2">
+                                    <label>อาคาร</label>
+                                    <input type="text" class="form-control" placeholder="อาคาร..">
+                                </div>
+
                                 <div class="col-3">
                                 <label>ประเภทการแจ้ง</label>
                                     <select id="inputState" class="form-control">
@@ -154,17 +179,17 @@
                                 </div>                              
                                 <div class="col">
                                     <label for="form-control">วันที่แจ้ง</label>
-                                    <input type="date" class="form-control" placeholder="วันที่">   
+                                    <input type="date" name='adddate' class="form-control" placeholder="วันที่" >   
                                     <label for="form-control">หมายเลขติดต่อกลับ</label>
-                                    <input type="text" class="form-control" placeholder="หมายเลขติดต่อกลับ">               
+                                    <input type="text" name ='callbackphone' class="form-control" placeholder="หมายเลขติดต่อกลับ">               
                                 </div>                  
                             </div>
                             <hr>
 
                         </div>
                         <div class="card-footer text-center">
-                            <input type="submit" name ="ยืนยัน" class ="btn btn-outline-info" value="ยืนยัน">
-                            <input type="reset" name ="ยกเลิก" class ="btn btn-outline-warning" value="ยกเลิก">
+                            <input type="submit" name ="ยืนยัน" class ="btn btn-info" value="ยืนยัน">
+                            <input type="reset" name ="ยกเลิก" class ="btn btn-warning" value="ยกเลิก">
                         </div>
                     </div>
                     </form>

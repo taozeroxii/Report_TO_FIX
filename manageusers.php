@@ -294,8 +294,10 @@
                                                             <select id="inputState" name="txtdepartment" class="form-control" required>
                                                                 <option selected value ="<?php  echo $result['department_id'];?>"><?php  echo $result['department_name'];?></option>
                                                                 <?php while($resultObjQuerfetchdepartment = mysqli_fetch_assoc($objquerydepartment)) { ?>
-                                                                <option value ="<?php if($result['department_id']!=$resultObjQuerfetchdepartment['department_ID']) {echo $resultObjQuerfetchdepartment['department_ID'];?>">  <?php  echo $resultObjQuerfetchdepartment['department_name'];}?> </option>
-                                                                <?php  }?>
+                                                                <?php    if($result['department_id']!=$resultObjQuerfetchdepartment['department_ID']) { ?>
+                                                                <option value ="<?php echo $resultObjQuerfetchdepartment['department_ID'];?>">  
+                                                                <?php  echo $resultObjQuerfetchdepartment['department_name'];?> </option>
+                                                                <?php  }}?>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -318,7 +320,8 @@
                                                             <input type="text" class="form-control" name="txtlname" value ="<?php  echo $result['lname'];?>"required>
                                                         </div>
                                                     </div>
-                                                    <hr>       
+                                                    <hr>  
+
                                                     <?php if($_SESSION['status']=='SUPERADMIN'){ ?> 
                                                     <div class="row">
                                                         <div class="col">
@@ -327,11 +330,16 @@
                                                         </div>
                                                         <div class="col">
                                                             <label>Password</label>
-                                                            <input type="password"  maxlength="10" class="form-control" placeholder="txtpassword" name="txtpassword" value ="<?php echo $result['password'];?>" required>
+                                                            <input type="password"  maxlength="15" class="form-control" placeholder="txtpassword" name="txtpassword" value ="<?php echo $result['password'];?>" required>
                                                         </div>
                                                     </div>
                                                     <hr>   
-                                                    <?php }?>                     
+                                                    <?php }else{?>      
+                                                        <input type="hidden" class="form-control" placeholder="User" name="txtuser"  value ="<?php echo $result['username'];?>" >
+                                                        <input type="hidden"  maxlength="10" class="form-control" placeholder="txtpassword" name="txtpassword" value ="<?php echo $result['password'];?>" >
+                                                    <?php }?>
+
+
 
                                                     <div class="row">
                                                         <div class="col">
