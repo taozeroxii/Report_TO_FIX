@@ -13,6 +13,28 @@
     <?php if(isset($_SESSION['username'])==""||isset($_SESSION['username'])==null) {
         echo "<script>alert('โปรดเข้าสู่ระบบก่อนดำเนินการแจ้งข้อมูล');window.location ='login.php';</script>";
     }?>
+
+
+
+    <?php 
+        include_once('connect.php');
+        mysqli_set_charset($conn, "utf8");
+
+        $_SESSION['title_name_id'];
+        $_SESSION['department_id'];
+
+        $QuerySelectIdtitle = "SELECT * FROM title_name WHERE title_name_id = '". $_SESSION['title_name_id']."'";
+        $objQuerySelectIdtitle = mysqli_query($conn,$QuerySelectIdtitle);
+        $objResultQuerySelectIdtitle = mysqli_fetch_array($objQuerySelectIdtitle);
+
+    
+    ?>
+
+
+
+
+
+
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand">โปรแกรมแจ้งซ่อม</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +102,7 @@
                                 </div>
                                 <div class="col-2">
                                     <label for="form-control">คำนำหน้าชื่อ</label>
-                                    <input type="text" class="form-control" value = "<?php echo $_SESSION['name']; ?>" disabled>
+                                    <input type="text" class="form-control" value = "<?php echo $objResultQuerySelectIdtitle['title_name']; ?>" disabled>
                                 </div>
                                 <div class="col">
                                     <label for="form-control">ชื่อ-นามสกุล</label>
@@ -95,19 +117,23 @@
     
                             <div class="row">
                                 
-                                <div class="col">
-                                    <label>หน่วยงาน</label>
-                                    <input type="text" class="form-control" placeholder="หน่วยงาน">
+                                <div class="col-4">
+                                    <label>แผนก</label>
+                                    <input type="text" class="form-control" placeholder="แผนก..">
                                 </div>
-                                <div class="col">
-                                    <label>ตึก/อาคาร</label>
-                                    <input type="text" class="form-control" placeholder="กรุณากรอกชื่ออาคารหรือตึก">
+                                <div class="col-2">
+                                    <label>อาคาร</label>
+                                    <input type="text" class="form-control" placeholder="อาคาร..">
                                 </div>
-                                <div class="col">
-                                    <label>ชั้น/ห้อง</label>
-                                    <input type="text" class="form-control" placeholder="กรุณากรอกชั้น">
+                                <div class="col-1">
+                                    <label>ชั้น</label>
+                                    <input type="text" class="form-control" placeholder="..">
                                 </div>
-                                <div class="col">
+                                <div class="col-2">
+                                    <label>ห้อง</label>
+                                    <input type="text" class="form-control" placeholder="ห้อง">
+                                </div>
+                                <div class="col-3">
                                 <label>ประเภทการแจ้ง</label>
                                     <select id="inputState" class="form-control">
                                         <option selected>เลือกประเภทการแจ้ง</option>

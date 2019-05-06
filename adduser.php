@@ -32,47 +32,65 @@
     }
     </script>
 
-    <!--///////////////////////////////////       /////////////////////////////////   -->
+
+
+
+    <!--///////////////////////////////////   PHP QUERY    /////////////////////////////////   -->
     <?php if(isset($_SESSION['username'])==""||isset($_SESSION['username'])==null) {
-    echo "<script>window.location ='login.php';</script>"; }
-    $message = "";
-    $cidexits ='';//ไว้เช็คเวลากดsubmit แล้วเจอเลขบัตรซ้ำให้สถานะเปลี่ยนและดึงค่าที่postมาใส่inputอีกครั้ง
+        echo "<script>window.location ='login.php';</script>"; }
+        $message = "";
+        $cidexits ='';//ไว้เช็คเวลากดsubmit แล้วเจอเลขบัตรซ้ำให้สถานะเปลี่ยนและดึงค่าที่postมาใส่inputอีกครั้ง
 
-    
-
-    if(isset($_POST['submit'])){
+        /////////////////////////////////     QUERY คำนำหน้าชื่อและแผนก   //////////////////////////////
         include_once('connect.php');
         mysqli_set_charset($conn, "utf8");
+        $querytitlename =  "SELECT title_name_id,title_name FROM  title_name";
+        $objQuerytitlename = mysqli_query($conn,$querytitlename);
+
+        $querydepartment =  "SELECT * FROM  department";
+        $objQuerydepartment = mysqli_query($conn,$querydepartment);
+    
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        
 
 
-        $strSQL = "SELECT * FROM users_account WHERE cid = '".$_POST["txtcid"]."' OR username = '".$_POST["txtuser"]."' ";
-        $objQuery = mysqli_query($conn,$strSQL);
-        $objResult = mysqli_fetch_array($objQuery);
-        if($objResult)
-        {
-          $message ="มีหมายเลขบัตรประชาชนหรือชื่อเข้าใช้หนี้อยู่ในระบบแล้วกรุณากรอกข้อมูลอีกครั้ง";
-          $cidexits ='1';
-        }
+        ///////////////////////////////////// เมื่อกดยืนยันข้อมูล /////////////////////////////////////////
+        if(isset($_POST['submit'])){
+            include_once('connect.php');
+            mysqli_set_charset($conn, "utf8");
 
 
-        else{
-            $sql = "INSERT INTO users_account (cid, username, password,name, fname, lname, niname,phone_number,status,inuser_date) 
-                VALUES ('".$_POST["txtcid"]."','".$_POST["txtuser"]."','".$_POST["txtpassword"]."'
-                ,'".$_POST["txtname"]."'
-                ,'".$_POST["txtfname"]."','".$_POST["txtlname"]."'
-                ,'".$_POST["txtniname"]."','".$_POST["txtphonen"]."'
-                ,'".$_POST["txtstatus"]."'
-                ,NOW()
-                )";
-
-            $query = mysqli_query($conn,$sql);
-
-            if($query) {
-                echo "<script>alert('เพิ่มผู้ใช้งานเรียบร้อย');window.location=adduser.php;</script>";
+            $strSQL = "SELECT * FROM users_account WHERE cid = '".$_POST["txtcid"]."' OR username = '".$_POST["txtuser"]."' ";
+            $objQuery = mysqli_query($conn,$strSQL);
+            $objResult = mysqli_fetch_array($objQuery);
+            if($objResult)
+            {
+            $message ="มีหมายเลขบัตรประชาชนหรือชื่อเข้าใช้หนี้อยู่ในระบบแล้วกรุณากรอกข้อมูลอีกครั้ง";
+            $cidexits ='1';
             }
-        }
-        mysqli_close($conn);
-   }  
+
+
+            else{
+                $sql = "INSERT INTO users_account (cid, username, password,title_name_id, fname, lname, niname,department_id,phone_number,status,inuser_date) 
+                    VALUES ('".$_POST["txtcid"]."','".$_POST["txtuser"]."','".$_POST["txtpassword"]."'
+                    ,'".$_POST["txtname"]."'
+                    ,'".$_POST["txtfname"]."'
+                    ,'".$_POST["txtlname"]."'
+                    ,'".$_POST["txtniname"]."'
+                    ,'".$_POST["txtdepartment"]."'
+                    ,'".$_POST["txtphonen"]."'
+                    ,'".$_POST["txtstatus"]."'
+                    ,NOW()
+                    )";
+
+                $query = mysqli_query($conn,$sql);
+
+                if($query) {
+                    echo "<script>alert('เพิ่มผู้ใช้งานเรียบร้อย');window.location=adduser.php;</script>";
+                }
+            }
+            mysqli_close($conn);
+    }  
     ?>
     <!--///////////////////////////////////       /////////////////////////////////   -->
 
@@ -138,7 +156,7 @@
                             <div class="row">
                                 <div class="col">
                                 <label for="form-control">เลขบัตรประจำตัวประชาชน</label>
-                                <input type="text" maxlength="13" OnKeyPress="return chkNumber(this)" class="form-control" name="txtcid" value ="<?php if($cidexits=='1') echo $_POST['txtcid'];?>" required>
+                                <input type="text" maxlength="13" minlength="13" OnKeyPress="return chkNumber(this)" class="form-control" name="txtcid" value ="<?php if($cidexits=='1') echo $_POST['txtcid'];?>" required>
                                 </div>
                                 <div class="col">
                                 <label>สิทธิการใช้งาน</label>
@@ -159,21 +177,35 @@
                                 <label>คำนำหน้าชื่อ</label>
                                 <select id="inputState" name="txtname" class="form-control" required>
                                     <option selected value ="">คำนำหน้า...</option>
-                                    <option value ="นาย">นาย</option>
-                                    <option value ="นาง">นาง</option>
-                                    <option value ="นางสาว">นางสาว</option>
+                                    <?php while ($objResulttitlename = mysqli_fetch_assoc($objQuerytitlename)) { ?>
+                                    <option value ="<?php echo $objResulttitlename['title_name_id'] ;?>">
+                                        <?php echo $objResulttitlename['title_name'] ;?>
+                                    </option>
+                                    <?php } ?>
                                 </select>
                                 </div>
-                                <div class="col-5">
-                                <label for="form-control">ชื่อ</label>
-                                <input type="text" class="form-control"  name="txtfname" value ="<?php if($cidexits=='1') echo $_POST['txtfname'];?>" required>
+                                <div class="col-3">
+                                    <label for="form-control">ชื่อ</label>
+                                    <input type="text" class="form-control"  name="txtfname" value ="<?php if($cidexits=='1') echo $_POST['txtfname'];?>" required>
                                 </div>
-                                <div class="col-5">
-                                <label for="form-control">นามสกุล</label>
-                                <input type="text" class="form-control" name="txtlname" value ="<?php if($cidexits=='1') echo $_POST['txtlname'];?>"required>
+                                <div class="col-3">
+                                    <label for="form-control">นามสกุล</label>
+                                    <input type="text" class="form-control" name="txtlname" value ="<?php if($cidexits=='1') echo $_POST['txtlname'];?>"required>
+                                </div>
+                                <div class="col-4">
+                                <label>แผนก</label>
+                                <select id="inputState" name="txtdepartment" class="form-control" required>
+                                    <option selected value ="">แผนก...</option>
+                                    <?php while ($objResultdepartment = mysqli_fetch_assoc($objQuerydepartment)) { ?>
+                                    <option value ="<?php echo $objResultdepartment['department_ID'] ;?>">
+                                        <?php echo $objResultdepartment['department_name'] ;?>
+                                    </option>
+                                <?php } ?>
+                                </select>
                                 </div>
                             </div>
                             <hr>
+
 
                             <div class="row">
                                 <div class="col">
@@ -199,7 +231,7 @@
                                 </div>
                                 <div class="col">
                                 <label>หมายเลขโทรศัพท์</label>
-                                <input type="text" OnKeyPress="return chkNumber(this)" maxlength="10" class="form-control" placeholder="หมายเลขโทรศัพท์" name="txtphonen" value ="<?php if($cidexits=='1') echo $_POST['txtphonen'];?>" required>
+                                <input type="text" OnKeyPress="return chkNumber(this)" minlength="3" maxlength="10" class="form-control" placeholder="หมายเลขโทรศัพท์" name="txtphonen" value ="<?php if($cidexits=='1') echo $_POST['txtphonen'];?>" required>
                                 </div>
                             </div>
                             <hr>

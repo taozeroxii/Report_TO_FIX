@@ -18,19 +18,21 @@
             $username = $_POST['username'];
             $password = $conn->real_escape_string ($_POST['password']);
 
-            $sql = "SELECT * FROM `users_account` WHERE `username` =  '".$username."'  AND `password` = '".$password."'";
+            $sql = "SELECT * FROM `users_account` WHERE `username` =  '".$username."'  AND `password` = '".$password."'";//query เช็ค user password ตรงไหม
+
             $result = $conn->query($sql);
-         
+          
             if($result->num_rows>0){
                 $accoutUsser = $result->fetch_assoc();
                 $_SESSION['cid'] =  $accoutUsser['cid'];
                 $_SESSION['username'] =  $accoutUsser['username'];
                 $_SESSION['password'] =  $accoutUsser['password'];
-                $_SESSION['name'] =  $accoutUsser['name'];
                 $_SESSION['fname'] =  $accoutUsser['fname'];
                 $_SESSION['lname'] =  $accoutUsser['lname'];
                 $_SESSION['status'] =  $accoutUsser['status'];
-               
+                $_SESSION['title_name_id'] =  $accoutUsser['title_name_id'];
+                $_SESSION['department_id'] =  $accoutUsser['department_id'];
+                
                 header('location:index.php');
        
             }else{  echo "<script>alert('Username หรือ password ผิดพลาด');window.location ='login.php';</script>"; }
