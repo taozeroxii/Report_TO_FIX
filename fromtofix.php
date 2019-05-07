@@ -38,11 +38,13 @@
     <?php if(isset($_POST['submit'])){
         echo $_SESSION['cid'];
         echo $_POST['txtstatusfix'];
-        echo $_POST['txtreportrepair'];
-        echo $_POST['txtadddate'];
+        echo $_POST['txtaddress'].' ';
+        echo $_POST['txtadddate'].' ';
         echo $_POST['txtcallbackphone'].'<br>';
+        echo $_POST['txtrepair_repord_id'];
 
     } 
+    //กำหนดค่า pk ของการแจ้งซ่อมโดยให้A นำหน้าตามด้วยปีและเดือนที่ลงข้อมูลเลขจะรัน + 1 ต่อจากค่าสุดท้ายใน sql
     $code = "A";
     $yearMonth = substr(date("Y")+543, -2).date("m");
      
@@ -55,7 +57,7 @@
     $maxId = ($maxId + 1); 
     
     $maxId = substr("00000".$maxId, -5);
-    echo $nextId = $code.$yearMonth.$maxId;
+    $nextId = $code.$yearMonth.$maxId;
     ?>
 
 
@@ -128,12 +130,15 @@
                                         <option selected value = '<?php echo $resultss['buliding_room_id']?>'>
                                         <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?></option>
                                     </select>
-                                    <input type="hidden" name = 'txtrepairrepordid' class="form-control" value = " <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?> " disabled>
+                                    <input type="hidden" name = 'txtaddress' class="form-control" value = " <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?> ">
                                     <?php } ?>
                                 </div>
 
-                                <div class="col-3">           
-                                <label for="form-control">เลขที่ใบแจ้ง</label><input type="text" name = 'txtrepairrepordid' class="form-control" value = "<?php  echo $nextId ?>" disabled>
+                                <div class="col-3">         
+                               
+                                    <label for="form-control">เลขที่ใบแจ้ง</label>
+                                    <input type="text"  class="form-control " value = "<?php  echo $nextId ?>" disabled>
+                                    <input type="hidden" name = 'txtrepair_repord_id'  class="form-control " value = "<?php  echo $nextId ?>">
                                 </div>
                         </div>
                         
@@ -173,7 +178,7 @@
                             <div class="row">
                                 <div class="col">
                                     <label for="exampleFormControlTextarea1">อาการเสียเบื้องต้น</label>
-                                    <textarea name = 'txtreportrepair' class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="อาการ..."></textarea>
+                                    <textarea name = 'txtreportrepair' class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="อาการ..." required></textarea>
                                 </div>                              
                                 <div class="col">
                                     <label for="form-control">วันที่แจ้ง</label>
