@@ -36,12 +36,42 @@
     ?>
 
     <?php if(isset($_POST['submit'])){
-        echo $_SESSION['cid'];
+       /* echo $_SESSION['cid'];
         echo $_POST['txtstatusfix'];
         echo $_POST['txtaddress'].' ';
         echo $_POST['txtadddate'].' ';
         echo $_POST['txtcallbackphone'].'<br>';
-        echo $_POST['txtrepair_repord_id'];
+        echo $_POST['txtrepair_repord_id'];*/
+
+        $sql = "INSERT INTO repair_report (repair_report_id,user_cid,address,status_fix,date_in,type_repair,callback_phone,repair_report_text,buliding_room_id) 
+        VALUES ('".$_POST["txtrepair_repord_id"]."'
+        ,'".$_SESSION["cid"]."'
+        ,'".$_POST["txtaddress"]."'
+        ,'".$_POST["txtstatusfix"]."'
+        ,'".$_POST["txtadddate"]."'
+        ,'".$_POST["txttyperepair"]."'
+        ,'".$_POST["txtcallbackphone"]."'
+        ,'".$_POST["txtreportrepair"]."'
+        ,'".$_POST["buliding_room_id"]."'
+        )";
+
+    $query = mysqli_query($conn,$sql);
+    
+        if( $query){
+            echo "<script>alert('เพิ่มผู้ใช้งานเรียบร้อย');window.location=adduser.php;</script>";
+            // LINE API NOTIFY//
+            function send_line_notify($message, $token)
+            { $ch = curl_init(); curl_setopt( $ch, CURLOPT_URL, "https://notify-api.line.me/api/notify"); curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0); curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0); curl_setopt( $ch, CURLOPT_POST, 1); curl_setopt( $ch, CURLOPT_POSTFIELDS, "message=$message"); curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1); $headers = array( "Content-type: application/x-www-form-urlencoded", "Authorization: Bearer $token", ); curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1); $result = curl_exec( $ch ); curl_close( $ch ); return $result;
+            }
+            $message = .'รหัสแจ้ง: '.$_POST["txtrepair_repord_id"]."\r\nผู้แจ้ง:"
+            .$_SESSION["fname"]." ".$_SESSION["lname"]."\r\nวันที่ :"
+            .$_POST["txtadddate"]."\r\nประเภท:".$_POST["txttyperepair"].
+            "\r\nอาการ: ".$_POST["txtreportrepair"]."\r\nติดต่อกลับ: ".$_POST["txtcallbackphone"];
+            $token = 'JM1KlQ87yxrkoRZ1bGpyHscYMiiqMO4rzyBC5EBzkhj';
+            send_line_notify($message, $token);
+        }
+
+
 
     } 
     //กำหนดค่า pk ของการแจ้งซ่อมโดยให้A นำหน้าตามด้วยปีและเดือนที่ลงข้อมูลเลขจะรัน + 1 ต่อจากค่าสุดท้ายใน sql
@@ -59,7 +89,6 @@
     $maxId = substr("00000".$maxId, -5);
     $nextId = $code.$yearMonth.$maxId;
     ?>
-
 
 
 
@@ -131,6 +160,7 @@
                                         <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?></option>
                                     </select>
                                     <input type="hidden" name = 'txtaddress' class="form-control" value = " <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?> ">
+                                    <input type="hidden" name = 'buliding_room_id' class="form-control" value = "<?php echo $resultss['buliding_room_id']?> ">
                                     <?php } ?>
                                 </div>
 
@@ -139,6 +169,7 @@
                                     <label for="form-control">เลขที่ใบแจ้ง</label>
                                     <input type="text"  class="form-control " value = "<?php  echo $nextId ?>" disabled>
                                     <input type="hidden" name = 'txtrepair_repord_id'  class="form-control " value = "<?php  echo $nextId ?>">
+                                    <input type="hidden" name = 'txtstatusfix'  class="form-control " value = "รอดำเนินการ">
                                 </div>
                         </div>
                         
@@ -159,7 +190,7 @@
                                 </div>
                                 <div class="col-3">
                                 <label>ประเภทการแจ้ง</label>
-                                    <select id="inputState" name = 'txtstatusfix' class="form-control" required>
+                                    <select id="inputState" name = 'txttyperepair' class="form-control" required>
                                         <option selected value = ''>เลือกประเภทการแจ้ง</option>
                                         <option  value = 'อุปกรณ์คอมพิวเตอร์'>อุปกรณ์คอมพิวเตอร์</option>
                                         <option value = 'โปรแกรม'>โปรแกรม</option>
