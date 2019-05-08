@@ -17,25 +17,25 @@
 
 
 
-     <!--  /////////////////// เชื่อมต่อ และquery จำนวนหน้าและและช่องแถบค้นหา GET METHOD FROM ค้นหา//////////////////     -->
-     <?php
-            $con = mysqli_connect('localhost', 'root', '', 'test');
-            mysqli_set_charset($con, "utf8");
-            $perpage = 10;
-            if (isset($_GET['page'])) {
-                $page = $_GET['page'];
-            } else {
-                $page = 1;
-            }
+    <!--  /////////////////// เชื่อมต่อ และquery จำนวนหน้าและและช่องแถบค้นหา GET METHOD FROM ค้นหา//////////////////     -->
+    <?php
+    $con = mysqli_connect('localhost', 'root', '', 'test');
+    mysqli_set_charset($con, "utf8");
+    $perpage = 10;
+    if (isset($_GET['page'])) {
+        $page = $_GET['page'];
+    } else {
+        $page = 1;
+    }
 
-            //query เอาเลขหน้า
-            $start = ($page - 1) * $perpage;
-            $sql = "select * from repair_report rp
+    //query เอาเลขหน้า
+    $start = ($page - 1) * $perpage;
+    $sql = "select * from repair_report rp
             inner join users_account ua on ua.cid = rp.user_cid
             ORDER BY rp.repair_report_id desc limit {$start} , {$perpage} ";
 
 
-           /* if (isset($_GET['txtKeyword'])) {
+    /* if (isset($_GET['txtKeyword'])) {
                 if($_GET["txtKeyword"] != "" ){
                     $sql  =  "SELECT ua.status,ua.inuser_date,ua.cid,ua.username,ua.password,ua.fname,ua.lname,ua.niname,ua.phone_number,ua.title_name_id,ua.department_id,dt.department_name,tn.title_name
                     from users_account ua 
@@ -51,23 +51,34 @@
                     ORDER BY `inuser_date` DESC limit {$start} , {$perpage} ";}
                
             }*/
-            $query = mysqli_query($con, $sql);
+    $query = mysqli_query($con, $sql);
 
 
-            ///////////////////////////////////// เมื่อกดรับงาน ส่ง POST เข้ามาทำงาน //////////////////////////////// 
-            if(isset($_POST['confirmjob'])){ //หากกดยืนยันรับงาน 
-                echo $_POST['admin_name'];
+    ///////////////////////////////////// เมื่อกดรับงาน ส่ง POST เข้ามาทำงาน //////////////////////////////// 
+    if (isset($_POST['confirmjob'])) { //หากกดยืนยันรับงาน 
+        //echo $_POST['admin_name'].$_POST['status_fix'].$_POST["repair_report_id"];
+       include_once('connect.php');
+       mysqli_set_charset($con, "utf8");
+        $addadminjob = "UPDATE `repair_report` SET 
+       `adminget` = '".$_POST["admin_name"]."', 
+       `status_fix` = '".$_POST["status_fix"]."'
+        WHERE `repair_report_id` = '".$_POST["repair_report_id"]."'
+        )";
+
+        $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
+        echo  $addadminjob;
+        if ( $Queryaddadminjob){
+            echo "<script>alert('กดรับเรียบร้อยแล้ว');window.location = index.php</script>";
+        }
+        mysqli_close($conn);
+
+    }
 
 
-                
-
-            }
-
-          
 
 
-        
-            ?>
+
+    ?>
 
 
 
@@ -122,9 +133,11 @@
 
 
 
-   
-    <center> <h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1>  </center>
-  
+
+    <center>
+        <h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1>
+    </center>
+
     <div class="container-fluid ">
         <hr>
         <div class="row">
@@ -132,9 +145,9 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <?php if($_SESSION['status'] =='ADMIN'||$_SESSION['status']=='SUPERADMIN'&&$_SESSION['department_id']=='dep999'){?>
-                            <th style="text-align:center;"> # </th>
-                            <?php }?>
+                            <?php if ($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN' && $_SESSION['department_id'] == 'dep999') { ?>
+                                <th style="text-align:center;"> # </th>
+                            <?php } ?>
                             <th style="text-align:center;"> รหัสใบแจ้ง</th>
                             <th style="text-align:center;">ชื่อ-นามสกุล ผู้แจ้ง </th>
                             <th style="text-align:center;">ชื่อ ผู้รับแจ้ง </th>
@@ -147,62 +160,64 @@
 
 
                     <tbody>
-                    <?php while ($result = mysqli_fetch_assoc($query)) { ?>
-                        <tr>
-                            <?php if($_SESSION['status'] =='ADMIN'||$_SESSION['status']=='SUPERADMIN'&&$_SESSION['department_id']=='dep999'){?>
-                            <td>
-                                <center>
-                                    <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal<?php echo $result['repair_report_id']; ?>">รับ</button>
-                                    <button class="btn btn-secondary" <?php if($result['status_fix']!='อยู่ระหว่างดำเนินการ'){echo 'disabled';}?>>ปิดงาน</button>
-                                </center>
-                            </td>
-                            <?php }?>
-                            <td style="text-align:center;"><?php echo $result['repair_report_id']; ?> </td>
-                            <td style="text-align:center;"><?php echo $result['fname'].'    '.$result['lname']; ?> </td>
-                            <td style="text-align:center;"><?php echo $result['adminget'] ?></td>
-                            <td style="text-align:center;"><?php echo $result['type_repair']; ?>  </td>
-                            <td style="text-align:center;"><?php echo $result['status_fix']; ?> </td>
-                            <td><?php echo $result['address']; ?>    </td>
-                            <td>
-                                <center><button type="button" class="btn btn-warning">
-                                        <img src="icon/edit.png" width="20" height="20" /> แก้ไขข้อมูล</button>
+                        <?php while ($result = mysqli_fetch_assoc($query)) { ?>
+                            <tr>
+                                <?php if ($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN' && $_SESSION['department_id'] == 'dep999') { ?>
+                                    <td>
+                                        <center>
+                                            <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal<?php echo $result['repair_report_id']; ?>"  <?php if ($result['status_fix'] != 'รอดำเนินการ') { echo 'disabled';}?>>รับ</button>
+                                            <button class="btn btn-secondary" <?php if ($result['status_fix'] != 'อยู่ระหว่างดำเนินการ') { echo 'disabled';} ?>>ปิดงาน</button>
+                                        </center>
+                                    </td>
+                                <?php } ?>
+                                <td style="text-align:center;"><?php echo $result['repair_report_id']; ?> </td>
+                                <td style="text-align:center;"><?php echo $result['fname'] . '    ' . $result['lname']; ?> </td>
+                                <td style="text-align:center;"><?php echo $result['adminget'] ?></td>
+                                <td style="text-align:center;"><?php echo $result['type_repair']; ?> </td>
+                                <td style="text-align:center;"><?php echo $result['status_fix']; ?> </td>
+                                <td><?php echo $result['address']; ?> </td>
+                                <td>
+                                    <center><button type="button" class="btn btn-warning">
+                                            <img src="icon/edit.png" width="20" height="20" /> แก้ไขข้อมูล</button>
                                         <button type="button" class="btn btn-danger ">
-                                        <img src="icon/delete.png" width="20" height="20" /> ลบข้อมูล</button>
-                                </center>
-                            </td>
-                        </tr>
-                         <!--///////////////////////////////////////////// Modal DELETE เมื่อกดปุ่มลบ ///////////////////////////////////////////////////////-->
-                        <div class="modal fade" id="exampleModal<?php echo $result['repair_report_id']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <!-- Modal content-->
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">รับงานนี้</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>รหัส: <?php echo $result['repair_report_id']; ?></p>
-                                        <p>ผู้แจ้ง: <?php echo $result['fname'].'    '.$result['lname']; ?></p>
-                                        <p>วันที่: <?php echo $result['date_in']; ?></p>
-                                        <p>ประเภท: <?php echo $result['type_repair']; ?> </p>
-                                        <p>สถานที่แจ้ง: <?php echo $result['address']; ?> </p>
-                                        <?php echo  'ชื่อผูู้กดรับงาน: ' . $_SESSION['fname'] . $_SESSION['lname'] . ' ( ' . $_SESSION['niname'] . ' )' ?>
-                                    </div>
-
-                                    <form action="#" method="POST">
-                                        <div class="modal-footer">
-                                            <input type="hidden" name = "admin_name" value = "<?php echo $_SESSION['fname'].'  ( '.$_SESSION['niname'].')'?>">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                                            <input type="submit" name="confirmjob" class="btn btn-primary" value="ยืนยัน">
+                                            <img src="icon/delete.png" width="20" height="20" /> ลบข้อมูล</button>
+                                    </center>
+                                </td>
+                            </tr>
+                            <!--///////////////////////////////////////////// Modal DELETE เมื่อกดปุ่มลบ ///////////////////////////////////////////////////////-->
+                            <div class="modal fade" id="exampleModal<?php echo $result['repair_report_id']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">รับงานนี้</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         </div>
-                                    </form>
+                                        <div class="modal-body">
+                                            <p>รหัส: <?php echo $result['repair_report_id']; ?></p>
+                                            <p>ผู้แจ้ง: <?php echo $result['fname'] . '    ' . $result['lname']; ?></p>
+                                            <p>วันที่: <?php echo $result['date_in']; ?></p>
+                                            <p>ประเภท: <?php echo $result['type_repair']; ?> </p>
+                                            <p>สถานที่แจ้ง: <?php echo $result['address']; ?> </p>
+                                            <?php echo  'ชื่อผูู้กดรับงาน: ' . $_SESSION['fname'] . $_SESSION['lname'] . ' ( ' . $_SESSION['niname'] . ' )' ?>
+                                        </div>
+
+                                        <form action="#" method="POST">
+                                            <div class="modal-footer">
+                                                <input type="hidden" name="admin_name" value="<?php echo $_SESSION['fname'] . '  ( ' . $_SESSION['niname'] . ')' ?>">
+                                                <input type="hidden" name="repair_report_id" value="<?php echo $result['repair_report_id']; ?>">
+                                                <input type="hidden" name="status_fix" value="อยู่ระหว่างดำเนินการ">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                                                <input type="submit" name="confirmjob" class="btn btn-primary" value="ยืนยัน">
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                         <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
-   
+                            <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
-                    <?php }?>
+
+                        <?php } ?>
                     <tbody>
                 </table>
             </div>
@@ -214,5 +229,4 @@
         <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
 </body>
-
 </html>
