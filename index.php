@@ -34,8 +34,6 @@
             inner join users_account ua on ua.cid = rp.user_cid
             ORDER BY rp.repair_report_id desc limit {$start} , {$perpage} ";
 
-      
-            
 
            /* if (isset($_GET['txtKeyword'])) {
                 if($_GET["txtKeyword"] != "" ){
@@ -54,6 +52,20 @@
                
             }*/
             $query = mysqli_query($con, $sql);
+
+
+            ///////////////////////////////////// เมื่อกดรับงาน ส่ง POST เข้ามาทำงาน //////////////////////////////// 
+            if(isset($_POST['confirmjob'])){ //หากกดยืนยันรับงาน 
+                echo $_POST['admin_name'];
+
+
+                
+
+            }
+
+          
+
+
         
             ?>
 
@@ -125,7 +137,7 @@
                             <?php }?>
                             <th style="text-align:center;"> รหัสใบแจ้ง</th>
                             <th style="text-align:center;">ชื่อ-นามสกุล ผู้แจ้ง </th>
-                            <th style="text-align:center;">ชื่อ-นามสกุล ผู้รับแจ้ง </th>
+                            <th style="text-align:center;">ชื่อ ผู้รับแจ้ง </th>
                             <th style="text-align:center;">ประเภท</th>
                             <th style="text-align:center;">สถานะดำเนินการ</th>
                             <th style="text-align:center;">สถานที่</th>
@@ -138,7 +150,12 @@
                     <?php while ($result = mysqli_fetch_assoc($query)) { ?>
                         <tr>
                             <?php if($_SESSION['status'] =='ADMIN'||$_SESSION['status']=='SUPERADMIN'&&$_SESSION['department_id']=='dep999'){?>
-                            <td><center><button class="btn btn-info" data-toggle="modal" data-target="#exampleModal<?php echo $result['repair_report_id']; ?>">รับ</button></center></td>
+                            <td>
+                                <center>
+                                    <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal<?php echo $result['repair_report_id']; ?>">รับ</button>
+                                    <button class="btn btn-secondary" <?php if($result['status_fix']!='อยู่ระหว่างดำเนินการ'){echo 'disabled';}?>>ปิดงาน</button>
+                                </center>
+                            </td>
                             <?php }?>
                             <td style="text-align:center;"><?php echo $result['repair_report_id']; ?> </td>
                             <td style="text-align:center;"><?php echo $result['fname'].'    '.$result['lname']; ?> </td>
@@ -161,7 +178,6 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title">รับงานนี้</h4>
-
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
                                     <div class="modal-body">
@@ -175,8 +191,9 @@
 
                                     <form action="#" method="POST">
                                         <div class="modal-footer">
+                                            <input type="hidden" name = "admin_name" value = "<?php echo $_SESSION['fname'].'  ( '.$_SESSION['niname'].')'?>">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
-                                            <input type="submit" name="delete" class="btn btn-primary" value="ยืนยัน">
+                                            <input type="submit" name="confirmjob" class="btn btn-primary" value="ยืนยัน">
                                         </div>
                                     </form>
                                 </div>
