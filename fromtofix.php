@@ -30,7 +30,7 @@
         where dp.department_id = '".$_SESSION['department_id']."'
         
         ";
-        $objQuerydptest = mysqli_query($conn,$Querydptest);
+         $objQuerydptest = mysqli_query($conn,$Querydptest);
 
         ///////////////////////////////////////////////////////////////////////////////////////////////
     ?>
@@ -155,7 +155,7 @@
                                 <div class="col-9">  
                                     <?php while($resultss = mysqli_fetch_assoc($objQuerydptest)){ ?>
                                     <label for="form-control">จุดใช้งาน</label>
-                                    <select id="txtbulidingroomid" class="form-control" required disabled>
+                                    <select id="txtbulidingroomid" class="form-control"  disabled>
                                         <option selected value = '<?php echo $resultss['buliding_room_id']?>'>
                                         <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?></option>
                                     </select>

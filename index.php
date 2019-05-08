@@ -52,27 +52,27 @@
                
             }*/
     $query = mysqli_query($conn, $sql);
-
+  
     ///////////////////////////////////// เมื่อกดรับงาน ส่ง POST เข้ามาทำงาน //////////////////////////////// 
     if (isset($_POST['confirmjob'])) { //หากกดยืนยันรับงาน 
-       //echo $_POST['admin_name'].$_POST['status_fix'].$_POST["repair_report_id"];
+       //echo $_POST['admin_name'].$_POST['status_fix'].$_POST["repair_report_id"].$_SESSION['cid']; 
        include_once('connect.php');
        mysqli_set_charset($conn, "utf8");
        
         $addadminjob = "UPDATE `repair_report` SET 
-       `adminget` = '".$_POST["admin_name"]."', 
-       `status_fix` = '".$_POST["status_fix"]."'
+       `adminget_name` = '".$_POST["admin_name"]."', 
+       `status_fix` = '".$_POST["status_fix"]."',
+       `admin_cid` = '".$_SESSION["cid"]."'
         WHERE `repair_report_id` = '".$_POST["repair_report_id"]."'
         ";
       
-       $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
-        if ( $Queryaddadminjob){
-            echo "<script>alert('กดรับเรียบร้อยแล้ว');window.location = index.php</script>";
-            
+        $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
+        echo  $Queryaddadminjob;
+        if ($Queryaddadminjob){
+            echo "<script>alert('กดรับเรียบร้อยแล้ว');window.location = 'index.php'</script>";  
         }
         else{echo "connect fail";}
         mysqli_close($conn);
-
     }
     ?>
 
@@ -206,6 +206,7 @@
                                                 <input type="hidden" name="admin_name" value="<?php echo $_SESSION['fname'] . '  ( ' . $_SESSION['niname'] . ')' ?>">
                                                 <input type="hidden" name="repair_report_id" value="<?php echo $result['repair_report_id']; ?>">
                                                 <input type="hidden" name="status_fix" value="อยู่ระหว่างดำเนินการ">
+
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
                                                 <input type="submit" name="confirmjob" class="btn btn-primary" value="ยืนยัน">
                                             </div>
