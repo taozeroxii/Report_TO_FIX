@@ -58,6 +58,83 @@
     </div>
     </nav>
 
+    <br>
+    <center><h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1></center>
+    <div class="container-fluid " >
+    <hr>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="text-align:center;" > # </th>
+                                <th style="text-align:center;" > รหัสใบแจ้ง</th>
+                                <th style="text-align:center;">ชื่อ-นามสกุล ผู้แจ้ง </th>
+                                <th style="text-align:center;">ชื่อ-นามสกุล ผู้แจ้ง </th>
+                                <th style="text-align:center;">ประเภท</th>  
+                                <th style="text-align:center;">สถนานะดำเนินการ</th>                             
+                                <th style="text-align:center;">สถานที่</th>
+                                <th style="text-align:center;">แก้ไข/ลบข้อมูล</th>
+                            </tr> 
+                        </thead>
+
+
+                        <tbody>
+                        <tr>
+                            <td><center><button class = "btn btn-info"  data-toggle="modal" data-target="#exampleModal">รับ</button></center> </td>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                            <td><center> <button type="button" class="btn btn-warning"> 
+                                    <img src="icon/edit.png" width="20" height="20"/> แก้ไขข้อมูล</button>
+                                    <button type="button" class="btn btn-danger " >
+                                    <img src="icon/delete.png"  width="20" height="20"/> ลบข้อมูล</button>
+                                    </center></td>
+                        </tr>
+                   
+                        <tbody>
+
+
+                        </table>
+                    </div>
+                </div>
+                     
+   
+    
+
+
+ <!--///////////////////////////////////////////// Modal DELETE เมื่อกดปุ่มลบ ///////////////////////////////////////////////////////-->    
+ <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">รับงานนี้</h4> 
+                                                   
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                <p>รหัส: A560500001</p> 
+                                                <p>วันที่: 2019-05-08</p>
+                                                <p>ประเภท: อุปกรณ์คอมพิวเตอร์ </p>
+                                                <p>สถานที่แจ้ง:  แผนก สูติ  ห้อง สูตินรีเวชกรรม ชั้น 4 อาคาร 114 เตียง  </p>
+                                                <?php echo  'ชื่อผูู้กดรับงาน: '.$_SESSION['fname'].$_SESSION['lname'].' ( '.$_SESSION['niname'].' )'?>
+                                              </div>
+                                            
+                                                <form action="#" method="POST">
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                                                        <input type="submit" name ="delete" class ="btn btn-primary" value="ยืนยัน">
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            </div>
+                                        </div>
+                                         <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////--> 
+
 
 
 
