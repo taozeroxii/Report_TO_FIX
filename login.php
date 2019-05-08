@@ -29,6 +29,7 @@
                 $_SESSION['password'] =  $accoutUsser['password'];
                 $_SESSION['fname'] =  $accoutUsser['fname'];
                 $_SESSION['lname'] =  $accoutUsser['lname'];
+                $_SESSION['niname'] =  $accoutUsser['niname'];
                 $_SESSION['status'] =  $accoutUsser['status'];
                 $_SESSION['phone_number'] =  $accoutUsser['phone_number'];
                 $_SESSION['title_name_id'] =  $accoutUsser['title_name_id'];

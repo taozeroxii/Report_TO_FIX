@@ -19,8 +19,8 @@
 
     <!--  /////////////////// เชื่อมต่อ และquery จำนวนหน้าและและช่องแถบค้นหา GET METHOD FROM ค้นหา//////////////////     -->
     <?php
-    $con = mysqli_connect('localhost', 'root', '', 'test');
-    mysqli_set_charset($con, "utf8");
+    include_once('connect.php');
+    mysqli_set_charset($conn, "utf8");
     $perpage = 10;
     if (isset($_GET['page'])) {
         $page = $_GET['page'];
@@ -51,7 +51,7 @@
                     ORDER BY `inuser_date` DESC limit {$start} , {$perpage} ";}
                
             }*/
-    $query = mysqli_query($con, $sql);
+    $query = mysqli_query($conn, $sql);
 
     ///////////////////////////////////// เมื่อกดรับงาน ส่ง POST เข้ามาทำงาน //////////////////////////////// 
     if (isset($_POST['confirmjob'])) { //หากกดยืนยันรับงาน 
@@ -65,10 +65,10 @@
         WHERE `repair_report_id` = '".$_POST["repair_report_id"]."'
         ";
       
-
+       $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
         if ( $Queryaddadminjob){
             echo "<script>alert('กดรับเรียบร้อยแล้ว');window.location = index.php</script>";
-            $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
+            
         }
         else{echo "connect fail";}
         mysqli_close($conn);
@@ -129,10 +129,6 @@
 
 
 
-
-
-
-
     <center>
         <h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1>
     </center>
@@ -153,6 +149,8 @@
                             <th style="text-align:center;">ประเภท</th>
                             <th style="text-align:center;">สถานะดำเนินการ</th>
                             <th style="text-align:center;">สถานที่</th>
+                            <th style="text-align:center;">วันที่แจ้ง</th>
+                            <th style="text-align:center;">ดำเนินการเสร็จ</th>
                             <th style="text-align:center;">แก้ไข/ลบข้อมูล</th>
                         </tr>
                     </thead>
@@ -171,10 +169,12 @@
                                 <?php } ?>
                                 <td style="text-align:center;"><?php echo $result['repair_report_id']; ?> </td>
                                 <td style="text-align:center;"><?php echo $result['fname'] . '    ' . $result['lname']; ?> </td>
-                                <td style="text-align:center;"><?php echo $result['adminget'] ?></td>
+                                <td style="text-align:center;"><?php echo $result['adminget_name'] ?></td>
                                 <td style="text-align:center;"><?php echo $result['type_repair']; ?> </td>
                                 <td style="text-align:center;"><?php echo $result['status_fix']; ?> </td>
                                 <td><?php echo $result['address']; ?> </td>
+                                <td style="text-align:center;">  </td>
+                                <td style="text-align:center;">  </td>
                                 <td>
                                     <center><button type="button" class="btn btn-warning">
                                             <img src="icon/edit.png" width="20" height="20" /> แก้ไขข้อมูล</button>
