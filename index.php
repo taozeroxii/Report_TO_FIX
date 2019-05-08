@@ -53,32 +53,31 @@
             }*/
     $query = mysqli_query($con, $sql);
 
-
     ///////////////////////////////////// เมื่อกดรับงาน ส่ง POST เข้ามาทำงาน //////////////////////////////// 
     if (isset($_POST['confirmjob'])) { //หากกดยืนยันรับงาน 
-        //echo $_POST['admin_name'].$_POST['status_fix'].$_POST["repair_report_id"];
+       //echo $_POST['admin_name'].$_POST['status_fix'].$_POST["repair_report_id"];
        include_once('connect.php');
-       mysqli_set_charset($con, "utf8");
+       mysqli_set_charset($conn, "utf8");
+       
         $addadminjob = "UPDATE `repair_report` SET 
        `adminget` = '".$_POST["admin_name"]."', 
        `status_fix` = '".$_POST["status_fix"]."'
         WHERE `repair_report_id` = '".$_POST["repair_report_id"]."'
-        )";
+        ";
+      
 
-        $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
-        echo  $addadminjob;
         if ( $Queryaddadminjob){
             echo "<script>alert('กดรับเรียบร้อยแล้ว');window.location = index.php</script>";
+            $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
         }
+        else{echo "connect fail";}
         mysqli_close($conn);
 
     }
-
-
-
-
-
     ?>
+
+
+
 
 
 
