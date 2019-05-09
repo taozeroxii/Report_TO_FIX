@@ -56,7 +56,7 @@
 
 
 
-     <nav class="navbar navbar-expand-lg navbar-light bg-light">
+     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm p-3 mb-5 bg-white rounded">
         <a class="navbar-brand">โปรแกรมแจ้งซ่อม</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -103,7 +103,7 @@
 
     <div class="cotainer">
         <div class="row">
-            <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-3 mx-auto mt-5">
+            <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-3 mx-auto mt-5 shadow p-3 mb-5 bg-white rounded">
                 <form action="#" method="POST"name ="form1" OnSubmit="return fncSubmit();">
                 <div class="card">
                     <div class="card-header text-center">เปลี่ยนรหัสผ่าน</div>

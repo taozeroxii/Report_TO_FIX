@@ -96,7 +96,7 @@
 
 
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm p-3 mb-5 bg-white rounded">
         <a class="navbar-brand">โปรแกรมแจ้งซ่อม</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -140,11 +140,6 @@
             </ul>
         </div>
     </nav>
-    <br>
-
-
-    
-    <hr>
 
 
 
@@ -154,12 +149,11 @@
                             <div class="row">
                             <div class="col-lg-6">
                             <center>
-                                <p></p>
                                 <h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1>
                             </center>
                             </div>
                                 <div class="col-lg-6">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered ">
                                         <tr>
                                         <th>
                                             <input name="txtKeyword" placeholder="ค้นหา" type="text" class="form-control"  id="txtKeyword" value="" >
@@ -175,10 +169,10 @@
 
 
     <div class="container-fluid ">
-        <hr>
+        <hr calss= 'mx-auto mt-5 shadow p-3 bg-white rounded'>
         <div class="row">
             <div class="col-lg-12">
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered table-hover ">
                     <thead>
                         <tr>
                             <?php if ($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN' && $_SESSION['department_id'] == 'dep999') { ?>
@@ -247,7 +241,7 @@
                                             <p>ประเภท: <?php echo $result['type_repair']; ?> </p>
                                             <p>สถานที่แจ้ง: <?php echo $result['address']; ?> </p>
                                             <p>อาการเบื้องต้น: <?php echo $result['repair_report_text']; ?> </p>
-                                            <?php echo  'ชื่อผูู้กดรับงาน: ' . $_SESSION['fname'] . $_SESSION['lname'] . ' ( ' . $_SESSION['niname'] . ' )' ?>
+                                            <?php echo  'ชื่อผูู้กดรับแจ้ง: คุณ.' . $_SESSION['fname'] . $_SESSION['lname'] . ' ( ' . $_SESSION['niname'] . ' )' ?>
                                         </div>
 
                                         <form action="#" method="POST">

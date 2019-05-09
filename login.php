@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css?family=Prompt" rel="stylesheet">
 </head>
 
-<body style="font-family: 'Prompt', sans-serif;">
+<body style="font-family: 'Prompt', sans-serif; background-size: cover" background="icon/bgimage.jpg">
 
     <?php 
         include_once('connect.php');
@@ -44,10 +44,10 @@
     
 
 
-    <div class="cotainer">
+    <div class="cotainer mt-5" style=" opacity: 1;">
     <br><br><br>
-        <div class="row">
-            <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-3 mx-auto mt-5">
+        <div class="row mt-5">
+            <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-3 mx-auto mt-5 shadow p-3 bg-white rounded">
                 <form action="#" method="POST">
                 <div class="card">
                     <div class="card-header text-center">เข้าสู่ระบบแจ้งซ่อม</div>
@@ -60,6 +60,7 @@
                             <label for="password">PASSWORD</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
+                        <hr>
                         <input type="submit" name ="submit" class ="btn btn-primary" value="LOGIN">
                         <input type="reset" name ="set" class ="btn btn-warning" value="RESET">
                     </div>

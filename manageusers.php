@@ -32,7 +32,7 @@
     ?>
 
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm p-3 mb-5 bg-white rounded">
         <a class="navbar-brand">โปรแกรมแจ้งซ่อม</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -200,7 +200,7 @@
 
 
 
-            <div class="container" >
+            <div class="container " >
                 <div class="row">
                     <div class="col-lg-12">
                         <table class="table table-bordered table-hover">

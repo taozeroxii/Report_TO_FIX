@@ -96,7 +96,7 @@
 
 
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm p-3 mb-5 bg-white rounded">
         <a class="navbar-brand">โปรแกรมแจ้งซ่อม</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -142,15 +142,15 @@
 
 
 
-        <div class="cotainer">
+        <div class="cotainer " >
             <div class="row">
-                <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-6 mx-auto mt-5">
-                    
-                
+                <div class="col-10 col-sm-10 col-md-6 col-lg-6 col-xl-6 mx-auto mt-4">
                     
                     <form action="#" method="POST">
-                    <div class="card">
-                        <div class="card-header text-center">แบบฟอร์มแจ้งซ่อม</div>
+                    <div class="card shadow-sm p-3 mb-5 bg-white rounded">
+                        <hr>
+                        <div class=" text-center"><h3>แบบฟอร์มแจ้งซ่อม</h3> </div>
+                        <hr>
                         <div class="card-body">
 
 
@@ -234,8 +234,15 @@
 
                         </div>
                         <div class="card-footer text-center">
-                            <input type="submit" name ="submit" class ="btn btn-info" value="ยืนยัน">
-                            <input type="reset" name ="reset" class ="btn btn-warning" value="ยกเลิก">
+                            <div class="row">
+                                <div class="col"></div>
+                                <div class="col"><input type="submit" name ="submit" class ="btn btn-info btn-lg  btn-block" value="ยืนยัน"></div>
+                                <div class="col"><input type="reset" name ="reset" class ="btn btn-warning btn-lg  btn-block" value="ยกเลิก"></div>
+                                <div class="col"></div>
+                            </div>
+                           
+                           
+                          
                         </div>
                     </div>
                     </form>
