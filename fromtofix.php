@@ -223,9 +223,9 @@
                                     $day = date('d');
                                     $year = (date('Y')+543); 
                                     $TIME =  date("h:i:sa"); 
-                                    $today = $day . '-' . $month . '-' . $year.'-'.$TIME ;
+                                    $today = $day . '-' . $month . '-' . $year.'  '.$TIME ;
                                     ?>
-                                    <input type="date-time" name='txtadddate' class="form-control" value ="<?php echo $today; ?>">   
+                                    <input type="datetime-asia" name='txtadddate' class="form-control" value ="<?php echo $today; ?>">   
                                     <label for="form-control">หมายเลขติดต่อกลับ</label>
                                     <input type="text" name ='txtcallbackphone' class="form-control" placeholder="หมายเลขติดต่อกลับ" value ="<?php echo $_SESSION['phone_number']?>">               
                                 </div>                  

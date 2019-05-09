@@ -143,9 +143,7 @@
     <br>
 
 
-    <center>
-        <h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1>
-    </center>
+    
     <hr>
 
 
@@ -155,6 +153,10 @@
                     <div class="container-fluid" >
                             <div class="row">
                             <div class="col-lg-6">
+                            <center>
+                                <p></p>
+                                <h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1>
+                            </center>
                             </div>
                                 <div class="col-lg-6">
                                     <table class="table table-bordered">
@@ -187,7 +189,6 @@
                             <th style="text-align:center;">ชื่อ ผู้รับแจ้ง </th>
                             <th style="text-align:center;">ประเภท</th>
                             <th style="text-align:center;">สถานะดำเนินการ</th>
-                            <th style="text-align:center;">สถานที่</th>
                             <th style="text-align:center;">วันที่แจ้ง</th>
                             <th style="text-align:center;">ดำเนินการเสร็จ</th>
                             <th style="text-align:center;">แก้ไข/ลบข้อมูล</th>
@@ -197,7 +198,7 @@
 
                     <tbody>
                         <?php while ($result = mysqli_fetch_assoc($query)) { ?>
-                            <tr>
+                            <tr  data-toggle="collapse" href="#collapseExample<?php echo $result['repair_report_id']?>" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <?php if ($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN' && $_SESSION['department_id'] == 'dep999') { ?>
                                     <td>
                                         <center>
@@ -211,15 +212,25 @@
                                 <td style="text-align:center;"><?php echo $result['adminget_name'] ?></td>
                                 <td style="text-align:center;"><?php echo $result['type_repair']; ?> </td>
                                 <td style="text-align:center;"><?php echo $result['status_fix']; ?> </td>
-                                <td><?php echo $result['address']; ?></td>
                                 <td style="text-align:center;"><?php  echo $result['date_in'];?> </td>
                                 <td style="text-align:center;">  </td>
                                 <td>
                                     <center><button type="button" class="btn btn-warning">
                                             <img src="icon/edit.png" width="20" height="20" /> แก้ไขข้อมูล</button>
                                     </center>
-                                </td>
+                                </td>    
                             </tr>
+                           <tr><td colspan="10">  
+                                   <div class="collapse" id="collapseExample<?php echo $result['repair_report_id']?>"">
+                                    <div class="card card-body">
+                                    <?php echo $result['address']; ?><?php echo '<br>อาการเบื้องต้น: '.$result['repair_report_text']; ?>
+                                    </div>
+                                   </div>
+                            </td></tr>
+                          
+                            
+                            
+
                             <!--///////////////////////////////////////////// Modal DELETE เมื่อกดปุ่มลบ ///////////////////////////////////////////////////////-->
                             <div class="modal fade" id="exampleModal<?php echo $result['repair_report_id']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -235,6 +246,7 @@
                                             <p>วันที่: <?php echo $result['date_in']; ?></p>
                                             <p>ประเภท: <?php echo $result['type_repair']; ?> </p>
                                             <p>สถานที่แจ้ง: <?php echo $result['address']; ?> </p>
+                                            <p>อาการเบื้องต้น: <?php echo $result['repair_report_text']; ?> </p>
                                             <?php echo  'ชื่อผูู้กดรับงาน: ' . $_SESSION['fname'] . $_SESSION['lname'] . ' ( ' . $_SESSION['niname'] . ' )' ?>
                                         </div>
 
