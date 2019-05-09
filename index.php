@@ -21,7 +21,7 @@
     <?php
     include_once('connect.php');
     mysqli_set_charset($conn, "utf8");
-    $perpage = 10;
+    $perpage = 7;
     if (isset($_GET['page'])) {
         $page = $_GET['page'];
     } else {
@@ -33,25 +33,9 @@
     $sql = "select * from repair_report rp
             inner join users_account ua on ua.cid = rp.user_cid
             ORDER BY rp.repair_report_id desc limit {$start} , {$perpage} ";
-
-
-    /* if (isset($_GET['txtKeyword'])) {
-                if($_GET["txtKeyword"] != "" ){
-                    $sql  =  "SELECT ua.status,ua.inuser_date,ua.cid,ua.username,ua.password,ua.fname,ua.lname,ua.niname,ua.phone_number,ua.title_name_id,ua.department_id,dt.department_name,tn.title_name
-                    from users_account ua 
-                    left join department dt on dt.department_id = ua.department_id  
-                    inner join title_name tn on ua.title_name_id = tn.title_name_id
-                    WHERE (ua.cid LIKE '%".$_GET["txtKeyword"]."%' or status LIKE '%".$_GET["txtKeyword"]."%' or ua.fname LIKE '%".$_GET["txtKeyword"]."%' or ua.lname LIKE '%".$_GET["txtKeyword"]."%' )";
-                }
-
-                else{ $sql = "select ua.status,ua.inuser_date,ua.cid,ua.username,ua.password,ua.fname,ua.lname,ua.niname,ua.phone_number,ua.title_name_id,ua.department_id,dt.department_name,tn.title_name
-                    from users_account ua 
-                    left join department dt on dt.department_id = ua.department_id  
-                    inner join title_name tn on ua.title_name_id = tn.title_name_id
-                    ORDER BY `inuser_date` DESC limit {$start} , {$perpage} ";}
-               
-            }*/
     $query = mysqli_query($conn, $sql);
+
+
   
     ///////////////////////////////////// เมื่อกดรับงาน ส่ง POST เข้ามาทำงาน //////////////////////////////// 
     if (isset($_POST['confirmjob'])) { //หากกดยืนยันรับงาน 
@@ -76,8 +60,28 @@
     }
     ?>
 
+    <?php
+     include_once('connect.php');
+     mysqli_set_charset($conn, "utf8");
+     if (isset($_GET['txtKeyword'])) {
+                    if($_GET["txtKeyword"] != "" ){
+                        $sql  =  "select * from repair_report rp
+                        inner join users_account ua on ua.cid = rp.user_cid
+                        WHERE (rp.repair_report_id LIKE '%".$_GET["txtKeyword"]."%' or 
+                        rp.status_fix LIKE '%".$_GET["txtKeyword"]."%' 
+                        or ua.fname LIKE '%".$_GET["txtKeyword"]."%' 
+                        or ua.lname LIKE '%".$_GET["txtKeyword"]."%' 
+                        or rp.date_in LIKE '%".$_GET["txtKeyword"]."%' 
+                        or rp.address LIKE '%".$_GET["txtKeyword"]."%' )";
+                    }
 
-
+                    else{ $sql = "select * from repair_report rp
+                        inner join users_account ua on ua.cid = rp.user_cid
+                        ORDER BY rp.repair_report_id desc limit {$start} , {$perpage} ";
+                    }
+                    $query = mysqli_query($conn, $sql); 
+        }
+    ?>
 
 
 
@@ -128,10 +132,33 @@
     <br>
 
 
-
     <center>
         <h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1>
     </center>
+
+
+
+     <!--  //////////////////////////////////////////// ค้นหา/////////////////////////////////////////////////////////     -->
+        <form name="frmSearch" method="get" action="<?php echo $_SERVER['SCRIPT_NAME'];?>"> <!-- $_SERVER['SCRIPT_NAME']; คือการดึงชื่อเอกสารมา เมื่อกด form นี้ให้เกิดaction โหลดหน้าเดิม-->
+                    <div class="container-fluid" >
+                            <div class="row">
+                            <div class="col-lg-6">
+                            </div>
+                                <div class="col-lg-6">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                        <th>
+                                            <input name="txtKeyword" placeholder="ค้นหา" type="text" class="form-control"  id="txtKeyword" value="" >
+                                        </th>
+                                        <th><input type="submit"  class ="btn btn-info btn-lg btn-block" value="Search"> </th>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                    </div>
+                </form>
+        <!--  //////////////////////////////////////////////////////////////////////////////////////////////////////////////    -->
+
 
     <div class="container-fluid ">
         <hr>
@@ -166,20 +193,18 @@
                                             <button class="btn btn-secondary" <?php if ($result['status_fix'] != 'อยู่ระหว่างดำเนินการ') { echo 'disabled';} ?>>ปิดงาน</button>
                                         </center>
                                     </td>
-                                <?php } ?>
+                                <?php }     $_nameuser =  $result['fname'] . '    ' . $result['lname'];  ?>
                                 <td style="text-align:center;"><?php echo $result['repair_report_id']; ?> </td>
                                 <td style="text-align:center;"><?php echo $result['fname'] . '    ' . $result['lname']; ?> </td>
                                 <td style="text-align:center;"><?php echo $result['adminget_name'] ?></td>
                                 <td style="text-align:center;"><?php echo $result['type_repair']; ?> </td>
                                 <td style="text-align:center;"><?php echo $result['status_fix']; ?> </td>
-                                <td><?php echo $result['address']; ?> </td>
-                                <td style="text-align:center;">  </td>
+                                <td><?php echo $result['address']; ?></td>
+                                <td style="text-align:center;"><?php  echo $result['date_in'];?> </td>
                                 <td style="text-align:center;">  </td>
                                 <td>
                                     <center><button type="button" class="btn btn-warning">
                                             <img src="icon/edit.png" width="20" height="20" /> แก้ไขข้อมูล</button>
-                                        <button type="button" class="btn btn-danger ">
-                                            <img src="icon/delete.png" width="20" height="20" /> ลบข้อมูล</button>
                                     </center>
                                 </td>
                             </tr>
@@ -222,6 +247,48 @@
                 </table>
             </div>
         </div>
+
+
+
+
+ <!--  /////////////////// ส่วนของ paginatorทำ query มาใหม่และนับจำนวนแถว //////////////////     -->
+ <?php
+ 
+            $sql2 = "select * from repair_report ";
+              if (isset($_GET['txtKeyword'])) {
+                if($_GET["txtKeyword"] != "" ){
+                    $sql2  =  "SELECT * FROM repair_report WHERE (repair_report_id LIKE '%".$_GET["txtKeyword"]."%' or status_fix LIKE '%".$_GET["txtKeyword"]."%' )";
+                }
+                else{ $sql2 = "SELECT * FROM `repair_report` ORDER BY `date_in` DESC";}
+            }
+            
+            $query2 = mysqli_query($conn, $sql2);
+            $total_record = mysqli_num_rows($query2);
+            $total_page = ceil($total_record / $perpage);
+            ?>
+
+
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link"  href="index.php?page=1" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span></a>
+                            <li class="page-item">
+                        <?php for($i=1;$i<=$total_page;$i++){ ?>
+                            <li class="page-item"><a class="page-link"  href="index.php?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                        <?php } ?>
+                            <li class="page-item">
+                                <a class="page-link"  href="index.php?page=<?php echo $total_page;?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                </div>
+            </div> <!-- /container -->
+     <!--  /////////////////// ส่วนของ paginatorทำ query มาใหม่และนับจำนวนแถว //////////////////     -->
+
+
 
         <script src="bootstrap/js/bootstrap.min.js"></script>
 

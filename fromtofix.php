@@ -213,7 +213,7 @@
                                 </div>                              
                                 <div class="col">
                                     <label for="form-control">วันที่แจ้ง</label>
-                                    <input type="date" name='txtadddate' class="form-control" placeholder="วันที่" >   
+                                    <input type="datetime-local" name='txtadddate' class="form-control" placeholder="วันที่" >   
                                     <label for="form-control">หมายเลขติดต่อกลับ</label>
                                     <input type="text" name ='txtcallbackphone' class="form-control" placeholder="หมายเลขติดต่อกลับ" value ="<?php echo $_SESSION['phone_number']?>">               
                                 </div>                  
