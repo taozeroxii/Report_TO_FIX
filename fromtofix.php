@@ -11,6 +11,7 @@
 </head>
 
 <body  style="font-family: 'Prompt', sans-serif;">
+
     <?php if(isset($_SESSION['username'])==""||isset($_SESSION['username'])==null) {
         echo "<script>alert('โปรดเข้าสู่ระบบก่อนดำเนินการแจ้งข้อมูล');window.location ='login.php';</script>";
     }?>
@@ -214,8 +215,17 @@
                                     <textarea name = 'txtreportrepair' class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="อาการ..." required></textarea>
                                 </div>                              
                                 <div class="col">
+                                        
                                     <label for="form-control">วันที่แจ้ง</label>
-                                    <input type="datetime-local" name='txtadddate' class="form-control" placeholder="วันที่" >   
+                                    <?php 
+                                     date_default_timezone_set("Asia/Bangkok"); //ตั้งโซนเวลา
+                                    $month = date('m');
+                                    $day = date('d');
+                                    $year = (date('Y')+543); 
+                                    $TIME =  date("h:i:sa"); 
+                                    $today = $day . '-' . $month . '-' . $year.'-'.$TIME ;
+                                    ?>
+                                    <input type="date-time" name='txtadddate' class="form-control" value ="<?php echo $today; ?>">   
                                     <label for="form-control">หมายเลขติดต่อกลับ</label>
                                     <input type="text" name ='txtcallbackphone' class="form-control" placeholder="หมายเลขติดต่อกลับ" value ="<?php echo $_SESSION['phone_number']?>">               
                                 </div>                  
