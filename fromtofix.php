@@ -222,7 +222,7 @@
                                     $month = date('m');
                                     $day = date('d');
                                     $year = (date('Y')+543); 
-                                    $TIME =  date("h:i:sa"); 
+                                    $TIME =  date("h:i:s a"); 
                                     $today = $day . '-' . $month . '-' . $year.'  '.$TIME ;
                                     ?>
                                     <input type="datetime-asia" name='txtadddate' class="form-control" value ="<?php echo $today; ?>">   

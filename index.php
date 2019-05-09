@@ -198,7 +198,7 @@
 
                     <tbody>
                         <?php while ($result = mysqli_fetch_assoc($query)) { ?>
-                            <tr  data-toggle="collapse" href="#collapseExample<?php echo $result['repair_report_id']?>" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            <tr data-toggle="collapse" href="#collapseExample<?php if($_SESSION['department_id'] != 'dep999'){ echo $result['repair_report_id'];}?>" role="button" aria-expanded="false" aria-controls="collapseExample">
                                 <?php if ($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN' && $_SESSION['department_id'] == 'dep999') { ?>
                                     <td>
                                         <center>

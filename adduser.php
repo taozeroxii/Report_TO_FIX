@@ -72,8 +72,9 @@
 
 
             else{
+                $password = mysqli_real_escape_string($conn,md5($_POST["txtpassword"]));//เข้ารหัส md5 password
                 $sql = "INSERT INTO users_account (cid, username, password,title_name_id, fname, lname, niname,department_id,phone_number,status,inuser_date) 
-                    VALUES ('".$_POST["txtcid"]."','".$_POST["txtuser"]."','".$_POST["txtpassword"]."'
+                    VALUES ('".$_POST["txtcid"]."','".$_POST["txtuser"]."','".$password."'
                     ,'".$_POST["txtname"]."'
                     ,'".$_POST["txtfname"]."'
                     ,'".$_POST["txtlname"]."'
@@ -83,6 +84,7 @@
                     ,'".$_POST["txtstatus"]."'
                     ,NOW()
                     )";
+                   
 
                 $query = mysqli_query($conn,$sql);
 
