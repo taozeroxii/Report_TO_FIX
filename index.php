@@ -8,13 +8,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>หน้าแรก</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Prompt" rel="stylesheet">
 </head>
 
-<body>
+
+
+<body style="font-family: 'Prompt', sans-serif;">
     <?php if (isset($_SESSION['username']) == "" || isset($_SESSION['username']) == null) {
         echo "<script>window.location ='login.php';</script>";
     } ?>
-
 
 
     <!--  /////////////////// เชื่อมต่อ และquery จำนวนหน้าและและช่องแถบค้นหา GET METHOD FROM ค้นหา//////////////////     -->
@@ -53,6 +55,15 @@
         $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
         echo  $Queryaddadminjob;
         if ($Queryaddadminjob){
+             // LINE API NOTIFY//
+             function send_line_notify($message, $token)
+             { $ch = curl_init(); curl_setopt( $ch, CURLOPT_URL, "https://notify-api.line.me/api/notify"); curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0); curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0); curl_setopt( $ch, CURLOPT_POST, 1); curl_setopt( $ch, CURLOPT_POSTFIELDS, "message=$message"); curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1); $headers = array( "Content-type: application/x-www-form-urlencoded", "Authorization: Bearer $token", ); curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1); $result = curl_exec( $ch ); curl_close( $ch ); return $result;
+             }
+             $message = "รหัสแจ้ง: ".$_POST['repair_report_id']."\r\nผู้แจ้ง: ".$_POST['userreport']
+             ."\r\nสถานะ: " .$_POST['status_fix']."\r\nผู้รับแจ้ง: ".$_POST['admin_name']
+             ."\r\nสถานที่: ".$_POST['address'];
+             $token = 'JM1KlQ87yxrkoRZ1bGpyHscYMiiqMO4rzyBC5EBzkhj';
+             send_line_notify($message, $token);
             echo "<script>alert('กดรับเรียบร้อยแล้ว');window.location = 'index.php'</script>";  
         }
         else{echo "connect fail";}
@@ -135,6 +146,7 @@
     <center>
         <h1>หน้าจอแสดงสถานะการแจ้งซ่อม</h1>
     </center>
+    <hr>
 
 
 
@@ -231,6 +243,8 @@
                                                 <input type="hidden" name="admin_name" value="<?php echo $_SESSION['fname'] . '  ( ' . $_SESSION['niname'] . ')' ?>">
                                                 <input type="hidden" name="repair_report_id" value="<?php echo $result['repair_report_id']; ?>">
                                                 <input type="hidden" name="status_fix" value="อยู่ระหว่างดำเนินการ">
+                                                <input type="hidden" name="userreport" value="<?php echo $result['fname'] . '    ' . $result['lname']; ?>">
+                                                <input type="hidden" name="address" value=" <?php echo $result['address']; ?>">
 
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
                                                 <input type="submit" name="confirmjob" class="btn btn-primary" value="ยืนยัน">

@@ -7,9 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>เข้าสู่ระบบ</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Prompt" rel="stylesheet">
 </head>
 
-<body>
+<body style="font-family: 'Prompt', sans-serif;">
 
     <?php 
         include_once('connect.php');

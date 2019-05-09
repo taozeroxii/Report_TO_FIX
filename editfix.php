@@ -7,9 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>แก้สถานะ</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Prompt" rel="stylesheet">
 </head>
 
-<body>
+<body  style="font-family: 'Prompt', sans-serif;">
     <?php if(isset($_SESSION['username'])==""||isset($_SESSION['username'])==null) {
         echo "<script>alert('โปรดเข้าสู่ระบบก่อนดำเนินการแจ้งข้อมูล');window.location ='login.php';</script>";
     }?>

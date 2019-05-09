@@ -7,9 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>แจ้งซ่อม</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Prompt" rel="stylesheet">
 </head>
 
-<body>
+<body  style="font-family: 'Prompt', sans-serif;">
     <?php if(isset($_SESSION['username'])==""||isset($_SESSION['username'])==null) {
         echo "<script>alert('โปรดเข้าสู่ระบบก่อนดำเนินการแจ้งข้อมูล');window.location ='login.php';</script>";
     }?>
@@ -66,7 +67,8 @@
             $message = 'รหัสแจ้ง: '.$_POST["txtrepair_repord_id"]."\r\nผู้แจ้ง: "
             .$_SESSION["fname"]." ".$_SESSION["lname"]."\r\nวันที่ :"
             .$_POST["txtadddate"]."\r\nประเภท: ".$_POST["txttyperepair"].
-            "\r\nอาการ: ".$_POST["txtreportrepair"]."\r\nติดต่อกลับ: ".$_POST["txtcallbackphone"];
+            "\r\nอาการ: ".$_POST["txtreportrepair"]."\r\nติดต่อกลับ: ".$_POST["txtcallbackphone"]
+            ."\r\nสถานที่: ".$_POST["txtaddress"];
             $token = 'JM1KlQ87yxrkoRZ1bGpyHscYMiiqMO4rzyBC5EBzkhj';
             send_line_notify($message, $token);
         }
