@@ -23,7 +23,7 @@
     <?php
     include_once('connect.php');
     mysqli_set_charset($conn, "utf8");
-    $perpage = 7;
+    $perpage = 5;
     if (isset($_GET['page'])) {
         $page = $_GET['page'];
     } else {
@@ -37,6 +37,11 @@
             ORDER BY rp.repair_report_id desc limit {$start} , {$perpage} ";
     $query = mysqli_query($conn, $sql);
 
+
+    $allrec = "select * from repair_report rp
+    inner join users_account ua on ua.cid = rp.user_cid
+    ORDER BY rp.repair_report_id desc";
+    $queryalrecord = mysqli_query($conn, $allrec);
 
   
     ///////////////////////////////////// เมื่อกดรับงาน ส่ง POST เข้ามาทำงาน //////////////////////////////// 
@@ -53,7 +58,7 @@
         ";
       
         $Queryaddadminjob =  mysqli_query($conn, $addadminjob);
-        echo  $Queryaddadminjob;
+        //echo  $Queryaddadminjob;
         if ($Queryaddadminjob){
              // LINE API NOTIFY//
              function send_line_notify($message, $token)
@@ -69,6 +74,32 @@
         else{echo "connect fail";}
         mysqli_close($conn);
     }
+
+    if (isset($_POST['closejob'])) {
+        include_once('connect.php');
+        mysqli_set_charset($conn, "utf8");
+        
+         $finish = "UPDATE `repair_report` SET 
+        `date_ex` = '".$_POST["exdate"]."', 
+        `status_fix` = '".$_POST["txtstatusfix2"]."',
+        `assis1_admin_name` = '".$_POST["txtassisadmin1"]."',
+        `assis2_admin_name` = '".$_POST["txtassisadmin2"]."',
+        `assis3_admin_name` = '".$_POST["txtassisadmin3"]."',
+        `repair_report_sumtext` = '".$_POST["txtfixdone"]."'
+         WHERE `repair_report_id` = '".$_POST["repair_report_id2"]."'
+         ";
+        $Queryfinish =  mysqli_query($conn, $finish);
+        if ($Queryfinish){
+            echo "<script>alert('ดำเนินการเรียบร้อย');window.location = 'index.php'</script>";  
+        }
+        else{echo "connect fail";}
+        mysqli_close($conn);
+     
+    }
+
+
+
+
     ?>
 
     <?php
@@ -82,6 +113,7 @@
                         rp.status_fix LIKE '%".$_GET["txtKeyword"]."%' 
                         or ua.fname LIKE '%".$_GET["txtKeyword"]."%' 
                         or ua.lname LIKE '%".$_GET["txtKeyword"]."%' 
+                        or rp.type_repair LIKE '%".$_GET["txtKeyword"]."%' 
                         or rp.date_in LIKE '%".$_GET["txtKeyword"]."%' 
                         or rp.address LIKE '%".$_GET["txtKeyword"]."%' )";
                     }
@@ -144,7 +176,7 @@
 
 
      <!--  //////////////////////////////////////////// ค้นหา/////////////////////////////////////////////////////////     -->
-        <form name="frmSearch" method="get" action="<?php echo $_SERVER['SCRIPT_NAME'];?>"> <!-- $_SERVER['SCRIPT_NAME']; คือการดึงชื่อเอกสารมา เมื่อกด form นี้ให้เกิดaction โหลดหน้าเดิม-->
+     <form name="frmSearch" method="get" action="<?php echo $_SERVER['SCRIPT_NAME'];?>"> <!-- $_SERVER['SCRIPT_NAME']; คือการดึงชื่อเอกสารมา เมื่อกด form นี้ให้เกิดaction โหลดหน้าเดิม-->
                     <div class="container-fluid" >
                             <div class="row">
                             <div class="col-lg-6">
@@ -165,17 +197,19 @@
                             </div>
                     </div>
                 </form>
+             
         <!--  //////////////////////////////////////////////////////////////////////////////////////////////////////////////    -->
 
 
     <div class="container-fluid ">
+    <?php echo  '<p>จำนวนทั้งหมด : '.$totaldata = mysqli_num_rows($queryalrecord).' รายการ</p>';?>
         <hr calss= 'mx-auto mt-5 shadow p-3 bg-white rounded'>
         <div class="row">
             <div class="col-lg-12">
                 <table class="table table-bordered table-hover ">
                     <thead>
                         <tr>
-                            <?php if ($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN' && $_SESSION['department_id'] == 'dep999') { ?>
+                            <?php if (($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN') && $_SESSION['department_id'] == 'dep999') { ?>
                                 <th style="text-align:center;"> # </th>
                             <?php } ?>
                             <th style="text-align:center;"> รหัสใบแจ้ง</th>
@@ -185,7 +219,7 @@
                             <th style="text-align:center;">สถานะดำเนินการ</th>
                             <th style="text-align:center;">วันที่แจ้ง</th>
                             <th style="text-align:center;">ดำเนินการเสร็จ</th>
-                            <th style="text-align:center;">แก้ไข/ลบข้อมูล</th>
+                            <th style="text-align:center;">แก้ไขข้อมูล</th>
                         </tr>
                     </thead>
 
@@ -193,11 +227,11 @@
                     <tbody>
                         <?php while ($result = mysqli_fetch_assoc($query)) { ?>
                             <tr data-toggle="collapse" href="#collapseExample<?php if($_SESSION['department_id'] != 'dep999'){ echo $result['repair_report_id'];}?>" role="button" aria-expanded="false" aria-controls="collapseExample">
-                                <?php if ($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN' && $_SESSION['department_id'] == 'dep999') { ?>
+                                <?php if (($_SESSION['status'] == 'ADMIN' || $_SESSION['status'] == 'SUPERADMIN' )&& $_SESSION['department_id'] == 'dep999') { ?>
                                     <td>
                                         <center>
                                             <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal<?php echo $result['repair_report_id']; ?>"  <?php if ($result['status_fix'] != 'รอดำเนินการ') { echo 'disabled';}?>>รับ</button>
-                                            <button class="btn btn-secondary" <?php if ($result['status_fix'] != 'อยู่ระหว่างดำเนินการ') { echo 'disabled';} ?>>ปิดงาน</button>
+                                            <button class="btn btn-secondary" data-toggle="modal" data-target="#closejob<?php echo $result['repair_report_id']; ?>" <?php if ($result['status_fix'] != 'อยู่ระหว่างดำเนินการ' || $_SESSION['cid'] != $result['admin_cid']  ) { echo 'disabled';} ?>>ปิดงาน</button>
                                         </center>
                                     </td>
                                 <?php }     $_nameuser =  $result['fname'] . '    ' . $result['lname'];  ?>
@@ -207,9 +241,9 @@
                                 <td style="text-align:center;"><?php echo $result['type_repair']; ?> </td>
                                 <td style="text-align:center;"><?php echo $result['status_fix']; ?> </td>
                                 <td style="text-align:center;"><?php  echo $result['date_in'];?> </td>
-                                <td style="text-align:center;">  </td>
+                                <td style="text-align:center;"><?php  echo $result['date_ex'];?>   </td>
                                 <td>
-                                    <center><button type="button" class="btn btn-warning">
+                                    <center><button type="button" class="btn btn-warning" <?php if (($result['status_fix'] != 'รอดำเนินการ') || $result['user_cid'] != $_SESSION['cid']) {echo "disabled";}  ?>>
                                             <img src="icon/edit.png" width="20" height="20" /> แก้ไขข้อมูล</button>
                                     </center>
                                 </td>    
@@ -225,7 +259,7 @@
                             
                             
 
-                            <!--///////////////////////////////////////////// Modal DELETE เมื่อกดปุ่มลบ ///////////////////////////////////////////////////////-->
+                            <!--///////////////////////////////////////////// Modal รับ///////////////////////////////////////////////////////-->
                             <div class="modal fade" id="exampleModal<?php echo $result['repair_report_id']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <!-- Modal content-->
@@ -241,7 +275,7 @@
                                             <p>ประเภท: <?php echo $result['type_repair']; ?> </p>
                                             <p>สถานที่แจ้ง: <?php echo $result['address']; ?> </p>
                                             <p>อาการเบื้องต้น: <?php echo $result['repair_report_text']; ?> </p>
-                                            <?php echo  'ชื่อผูู้กดรับแจ้ง: คุณ.' . $_SESSION['fname'] . $_SESSION['lname'] . ' ( ' . $_SESSION['niname'] . ' )' ?>
+                                            <?php echo  'ชื่อผูู้กดรับแจ้ง: คุณ.' . $_SESSION['fname'] .' '. $_SESSION['lname'] . ' ( ' . $_SESSION['niname'] . ' )' ?>
                                         </div>
 
                                         <form action="#" method="POST">
@@ -262,13 +296,81 @@
                             <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 
 
+
+
+                               <!--///////////////////////////////////////////// Modal close job  ///////////////////////////////////////////////////////-->
+                               <div class="modal fade" id="closejob<?php echo $result['repair_report_id']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">ปิดงาน</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>รหัส: <?php echo $result['repair_report_id']; ?></p>
+                                            <p>ผู้แจ้ง: <?php echo $result['fname'] . '    ' . $result['lname']; ?></p>
+                                            <p>วันที่: <?php echo $result['date_in']; ?></p>
+                                            <p>ประเภท: <?php echo $result['type_repair']; ?> </p>
+                                            <p>สถานที่แจ้ง: <?php echo $result['address']; ?> </p>
+                                            <p>อาการเบื้องต้น: <?php echo $result['repair_report_text']; ?> </p>
+                                            <?php echo  'ชื่อผูู้กดรับแจ้ง: คุณ.' . $_SESSION['fname'] .' '.$_SESSION['lname'] . ' ( ' . $_SESSION['niname'] . ' )' ?>
+                                            <hr>
+                                            <h4 class="modal-title">ข้อมูลเพิ่มเติม</h4>
+                                            <hr>
+                                            <form action="#" method="POST" name = 'colsejob'>
+                                        
+    
+                                                <div class="row">
+                                                <?php for($i=0;$i<3;$i++){?>
+                                                    <div class="col-4">
+                                                        <label for="assis1">ผู้ร่วมแก้ไข <?php echo $i+1;?></label>
+                                                        <select id="inputState" name="txtassisadmin<?php echo $i+1;?>" class="form-control" >
+                                                            <option selected value ="-">ผู้ช่วย...</option>
+                                                            <option value ="เอก">เอก</option>
+                                                            <option value ="โอ">โอ</option>
+                                                            <option value ="ดอย">ดอย</option>
+                                                            <option value ="มาร์ค">มาร์ค</option>
+                                                            <option value ="เต๋า">เต๋า</option>
+                                                        </select>
+                                                    </div>
+                                                <?php }?>
+                                                </div>
+                                                <div class="row mt-1">
+                                                    <div class="col"> 
+                                                        <textarea name = 'txtfixdone' class="form-control" id="exampleFormControlTextarea1" rows="4" placeholder="วีธีแก้/ผลลัพธ์..." required></textarea>
+                                                    </div>
+                                                </div>  
+                                        </div>
+
+                    
+                                            <div class="modal-footer">
+                                                <?php 
+                                                    date_default_timezone_set("Asia/Bangkok"); //ตั้งโซนเวลา
+                                                    $month = date('m');
+                                                    $day = date('d');
+                                                    $year = (date('Y')+543); 
+                                                    $TIME =  date("h:i:s a"); 
+                                                    $today = $day . '-' . $month . '-' . $year.'  '.$TIME ;
+                                                ?>
+                                                <input type="hidden" name="repair_report_id2" value="<?php echo $result['repair_report_id']; ?>">
+                                                <input type="hidden" name="txtstatusfix2" value="ดำเนินการเรียบร้อย">
+                                                <input type="hidden" name="exdate" value="<?php echo $today?>">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
+                                                <input type="submit" name="closejob" class="btn btn-primary" value="ยืนยัน">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+
                         <?php } ?>
                     <tbody>
                 </table>
             </div>
         </div>
-
-
 
 
  <!--  /////////////////// ส่วนของ paginatorทำ query มาใหม่และนับจำนวนแถว //////////////////     -->
@@ -277,7 +379,7 @@
             $sql2 = "select * from repair_report ";
               if (isset($_GET['txtKeyword'])) {
                 if($_GET["txtKeyword"] != "" ){
-                    $sql2  =  "SELECT * FROM repair_report WHERE (repair_report_id LIKE '%".$_GET["txtKeyword"]."%' or status_fix LIKE '%".$_GET["txtKeyword"]."%' )";
+                    $sql2  =  "SELECT * FROM repair_report WHERE (repair_report_id LIKE '%".$result['adminget_name'] ."%' or repair_report_id LIKE '%".$_GET["txtKeyword"]."%' or status_fix LIKE '%".$_GET["txtKeyword"]."%' )";
                 }
                 else{ $sql2 = "SELECT * FROM `repair_report` ORDER BY `date_in` DESC";}
             }
@@ -307,11 +409,40 @@
                 </div>
             </div> <!-- /container -->
      <!--  /////////////////// ส่วนของ paginatorทำ query มาใหม่และนับจำนวนแถว //////////////////     -->
-
-
+  
+	
+    <script>
+        $(document).ready(function(){
+            var i=1;
+            $('#add').click(function(){
+                if(i<3){ i++;
+                $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" placeholder="Enter your Name" class="form-control name_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');}
+               
+            });
+            
+            $(document).on('click', '.btn_remove', function(){
+                var button_id = $(this).attr("id"); 
+                $('#row'+button_id+'').remove();
+            });
+            
+            $('#submit').click(function(){		
+                $.ajax({
+                    url:"name.php",
+                    method:"POST",
+                    data:$('#add_name').serialize(),
+                    success:function(data)
+                    {
+                        alert(data);
+                        $('#add_name')[0].reset();
+                    }
+                });
+            });
+            
+        });
+    </script>
+	
 
         <script src="bootstrap/js/bootstrap.min.js"></script>
-
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
         <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>

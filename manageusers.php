@@ -294,10 +294,11 @@
                                                         <label>แผนก</label>
                                                             <select id="inputState" name="txtdepartment" class="form-control" required>
                                                                 <option selected value ="<?php  echo $result['department_id'];?>"><?php  echo $result['department_name'];?></option>
-                                                                <?php while($resultObjQuerfetchdepartment = mysqli_fetch_assoc($objquerydepartment)) { ?>
-                                                                <?php    if($result['department_id']!=$resultObjQuerfetchdepartment['department_ID']) { ?>
-                                                                <option value ="<?php echo $resultObjQuerfetchdepartment['department_ID'];?>">  
-                                                                <?php  echo $resultObjQuerfetchdepartment['department_name'];?> </option>
+                                                                <?php 
+                                                                        while($depfetch = mysqli_fetch_assoc($objquerydepartment)) {
+                                                                        if($result['department_id']!=$depfetch['department_ID']) { ?>
+                                                                                <option value ="<?php echo $depfetch['department_ID'];?>">  
+                                                                                <?php  echo $depfetch['department_name'];?> </option>
                                                                 <?php  }}?>
                                                             </select>
                                                         </div>

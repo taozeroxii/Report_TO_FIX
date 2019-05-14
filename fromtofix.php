@@ -13,7 +13,7 @@
 <body  style="font-family: 'Prompt', sans-serif;">
 
     <?php if(isset($_SESSION['username'])==""||isset($_SESSION['username'])==null) {
-        echo "<script>alert('โปรดเข้าสู่ระบบก่อนดำเนินการแจ้งข้อมูล');window.location ='login.php';</script>";
+        echo "<script>window.location ='login.php';</script>";
     }?>
 
 
@@ -44,6 +44,7 @@
         echo $_POST['txtadddate'].' ';
         echo $_POST['txtcallbackphone'].'<br>';
         echo $_POST['txtrepair_repord_id'];*/
+       // echo $_POST['txt'];
 
         $sql = "INSERT INTO repair_report (repair_report_id,user_cid,address,status_fix,date_in,type_repair,callback_phone,repair_report_text,buliding_room_id) 
         VALUES ('".$_POST["txtrepair_repord_id"]."'
@@ -60,7 +61,7 @@
     $query = mysqli_query($conn,$sql);
     
         if( $query){
-            echo "<script>alert('เพิ่มผู้ใช้งานเรียบร้อย');window.location=adduser.php;</script>";
+            echo "<script>alert('แจ้งข้อมูลเรียบร้อย');window.location=fromtofix.php;</script>";
             // LINE API NOTIFY//
             function send_line_notify($message, $token)
             { $ch = curl_init(); curl_setopt( $ch, CURLOPT_URL, "https://notify-api.line.me/api/notify"); curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0); curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0); curl_setopt( $ch, CURLOPT_POST, 1); curl_setopt( $ch, CURLOPT_POSTFIELDS, "message=$message"); curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1); $headers = array( "Content-type: application/x-www-form-urlencoded", "Authorization: Bearer $token", ); curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1); $result = curl_exec( $ch ); curl_close( $ch ); return $result;
@@ -160,9 +161,9 @@
                                     <label for="form-control">จุดใช้งาน</label>
                                     <select id="txtbulidingroomid" class="form-control"  disabled>
                                         <option selected value = '<?php echo $resultss['buliding_room_id']?>'>
-                                        <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?></option>
+                                        <?php echo 'แผนก '.substr($resultss['department_name'],6).'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?></option>
                                     </select>
-                                    <input type="hidden" name = 'txtaddress' class="form-control" value = " <?php echo 'แผนก '.$resultss['department_name'].'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?> ">
+                                    <input type="hidden" name = 'txtaddress' class="form-control" value = " <?php echo 'แผนก '.substr($resultss['department_name'],6).'  ห้อง '.$resultss['room_name'].' '.$resultss['buliding_floor_name'].' อาคาร '.$resultss['buliding_name'];?> ">
                                     <input type="hidden" name = 'buliding_room_id' class="form-control" value = "<?php echo $resultss['buliding_room_id']?> ">
                                     <?php } ?>
                                 </div>
@@ -221,9 +222,9 @@
                                      date_default_timezone_set("Asia/Bangkok"); //ตั้งโซนเวลา
                                     $month = date('m');
                                     $day = date('d');
-                                    $year = (date('Y')+543); 
-                                    $TIME =  date("h:i:s a"); 
-                                    $today = $day . '-' . $month . '-' . $year.'  '.$TIME ;
+                                    $year = (date('Y')); 
+                                    $TIME = date("H:i:s");   //date("h:i:s a"); แบบมีpm am
+                                    $today = $year. '-' . $month . '-' .$day . '  '.$TIME ;
                                     ?>
                                     <input type="datetime-asia" name='txtadddate' class="form-control" value ="<?php echo $today; ?>">   
                                     <label for="form-control">หมายเลขติดต่อกลับ</label>
