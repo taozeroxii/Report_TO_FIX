@@ -88,10 +88,20 @@
     $rs = mysqli_fetch_assoc($qry);
     $maxId = substr($rs['last_id'], -5);  //ข้อมูลนี้จะติดรหัสตัวอักษรด้วย ตัดเอาเฉพาะตัวเลขท้ายนะครับ
     //$maxId = 237;   //<--- บรรทัดนี้เป็นเลขทดสอบ ตอนใช้จริงให้ ลบ! ออกด้วยนะครับ
-    $maxId = ($maxId + 1); 
-    
-    $maxId = substr("00000".$maxId, -5);
-    $nextId = $code.$yearMonth.$maxId;
+
+    if( $code.$yearMonth.$maxId != $rs['last_id']){// ดักไว้ว่าหากขึ้นเดือนใหม่ให้รีค่า maxid กลับไปเริ่มนับจาก 1 ใหม่ เช่นค่าล่าสุดเดือน 5 A62050020 พอเดือนเปลี่ยนค่าจะเทียบกับ A62060020 คือไม่ตรงให้เซ็ตเริ่มที่ 1 ใหม่
+     // echo "testnew MONTh";
+      $maxId = 1;  //maxid = 1
+      $maxId = substr("00000".$maxId, -5);
+      $nextId = $code.$yearMonth.$maxId; // ค่าที่ได้เป็น A62060001 
+    }
+    else{
+      $maxId = ($maxId + 1);  
+      $maxId = substr("00000".$maxId, -5);
+      $nextId = $code.$yearMonth.$maxId;
+    }
+
+  
     ?>
 
 
